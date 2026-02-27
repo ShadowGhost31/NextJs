@@ -22,7 +22,10 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     text: parsed.data.text,
   });
 
-  if (!res.ok) return NextResponse.json({ error: res.error }, { status: 409 });
+  if (!res.ok) {
+    const status = res.error.includes("вже") ? 409 : 403;
+    return NextResponse.json({ error: res.error }, { status });
+  }
 
   return NextResponse.json(res.review);
 }

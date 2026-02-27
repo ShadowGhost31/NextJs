@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 
 type TicketType = {
@@ -11,7 +12,15 @@ type TicketType = {
   isActive: boolean;
 };
 
-export default function BuyTicketForm({ ticketTypes }: { ticketTypes: TicketType[] }) {
+export default function BuyTicketForm({
+  ticketTypes,
+  isAuthed,
+  loginHref,
+}: {
+  ticketTypes: TicketType[];
+  isAuthed: boolean;
+  loginHref: string;
+}) {
   const active = ticketTypes.filter((t) => t.isActive);
   const initial = active?.[0]?.id || "";
   const [ticketTypeId, setTicketTypeId] = useState(initial);
@@ -19,10 +28,7 @@ export default function BuyTicketForm({ ticketTypes }: { ticketTypes: TicketType
   const [msg, setMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const selected = useMemo(
-    () => active.find((t) => t.id === ticketTypeId) || null,
-    [active, ticketTypeId]
-  );
+  const selected = useMemo(() => active.find((t) => t.id === ticketTypeId) || null, [active, ticketTypeId]);
 
   async function submit() {
     setMsg(null);
@@ -38,14 +44,26 @@ export default function BuyTicketForm({ ticketTypes }: { ticketTypes: TicketType
     setLoading(false);
 
     if (!res.ok) setMsg(data.error || "Помилка");
-    else setMsg(`Замовлення створено. Сума: ${(data.total / 100).toFixed(2)} грн`);
+    else setMsg(`Замовлення створено. Статус: очікує оплати. Сума: ${(data.total / 100).toFixed(2)} грн`);
   }
 
   const available = selected ? selected.quantityTotal - selected.quantitySold : 0;
 
   return (
     <div className="mt-4 space-y-3">
-      {active.length === 0 ? (
+      {!isAuthed ? (
+        <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200">
+          Щоб оформити замовлення, потрібно увійти.
+          <div className="mt-3">
+            <Link
+              href={loginHref}
+              className="inline-block rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition"
+            >
+              Увійти
+            </Link>
+          </div>
+        </div>
+      ) : active.length === 0 ? (
         <div className="text-slate-300">Квитків поки що немає.</div>
       ) : (
         <>

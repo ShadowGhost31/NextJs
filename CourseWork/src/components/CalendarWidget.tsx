@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 function pad2(n: number) {
   return String(n).padStart(2, "0");
@@ -34,13 +34,16 @@ export default function CalendarWidget({
   year,
   month,
   counts,
+  eventsPath = "/events",
 }: {
   year: number;
   month: number;
   counts: Record<string, number>;
+  eventsPath?: string;
 }) {
   const router = useRouter();
   const sp = useSearchParams();
+  const pathname = usePathname();
 
   const date = useMemo(() => new Date(year, month, 1), [year, month]);
   const days = useMemo(() => buildGrid(date), [date]);
@@ -48,18 +51,18 @@ export default function CalendarWidget({
   function setDayFilter(day: Date) {
     const from = keyOfDate(day);
     const to = keyOfDate(day);
-    const params = new URLSearchParams(sp.toString());
+    const params = new URLSearchParams();
     params.set("dateFrom", from);
     params.set("dateTo", to);
     params.set("page", "1");
-    router.push(`/?${params.toString()}#events`);
+    router.push(`${eventsPath}?${params.toString()}#list`);
   }
 
   function shiftMonth(delta: number) {
     const d2 = new Date(year, month + delta, 1);
     const params = new URLSearchParams(sp.toString());
     params.set("cal", `${d2.getFullYear()}-${pad2(d2.getMonth() + 1)}`);
-    router.push(`/?${params.toString()}#calendar`);
+    router.push(`${pathname}?${params.toString()}#calendar`);
   }
 
   const title = monthLabel(date);
@@ -87,8 +90,10 @@ export default function CalendarWidget({
       </div>
 
       <div className="grid grid-cols-7 gap-2 text-xs text-slate-400">
-        {['Пн','Вт','Ср','Чт','Пт','Сб','Нд'].map((x) => (
-          <div key={x} className="text-center">{x}</div>
+        {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].map((x) => (
+          <div key={x} className="text-center">
+            {x}
+          </div>
         ))}
       </div>
 
@@ -122,9 +127,7 @@ export default function CalendarWidget({
         })}
       </div>
 
-      <div className="text-xs text-slate-400">
-        Натисни на день, щоб показати події на цю дату.
-      </div>
+      <div className="text-xs text-slate-400">Натисни на день, щоб показати події на цю дату.</div>
     </div>
   );
 }

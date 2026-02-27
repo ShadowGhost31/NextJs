@@ -1,8 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
-export default function ReviewForm({ eventId }: { eventId: string }) {
+export default function ReviewForm({
+  eventId,
+  isAuthed,
+  canReview,
+  reason,
+  loginHref,
+}: {
+  eventId: string;
+  isAuthed: boolean;
+  canReview: boolean;
+  reason: string | null;
+  loginHref: string;
+}) {
   const [rating, setRating] = useState(5);
   const [text, setText] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
@@ -23,6 +36,30 @@ export default function ReviewForm({ eventId }: { eventId: string }) {
 
     if (!res.ok) setMsg(data.error || "Помилка");
     else setMsg("Відгук надіслано та очікує модерації.");
+  }
+
+  if (!isAuthed) {
+    return (
+      <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200">
+        Щоб залишити відгук, потрібно увійти.
+        <div className="mt-3">
+          <Link
+            href={loginHref}
+            className="inline-block rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition"
+          >
+            Увійти
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (!canReview) {
+    return (
+      <div className="mt-4 rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200">
+        {reason || "Ви не можете залишити відгук."}
+      </div>
+    );
   }
 
   return (

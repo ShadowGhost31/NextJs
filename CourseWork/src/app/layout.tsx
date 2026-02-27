@@ -35,13 +35,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="flex items-center gap-3">
               <Link href="/" className="flex items-center gap-2">
                 <span className="relative h-7 w-7 overflow-hidden rounded-xl border border-white/10 bg-white/5">
-                  <Image src="/logo.png" alt="Житомир" fill className="object-cover" unoptimized />
+                  <Image src="/logo.png" alt="Житомир" fill className="object-cover" />
                 </span>
                 <span className="font-semibold tracking-tight">{site.name}</span>
               </Link>
 
               <nav className="hidden md:flex items-center gap-1">
-                <NavLink href="/">Події</NavLink>
+                <NavLink href="/events">Події</NavLink>
                 <NavLink href="/#calendar">Календар</NavLink>
                 {me && <NavLink href="/account">Кабінет</NavLink>}
                 {canPanel && <NavLink href="/panel">Панель</NavLink>}

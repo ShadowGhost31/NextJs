@@ -5,7 +5,7 @@ import Badge from "@/components/Badge";
 import FavoriteButton from "@/components/FavoriteButton";
 import { formatDateTime } from "@/lib/utils";
 import { getCurrentUserFromCookie } from "@/lib/auth";
-import { eventService } from "@/server/services";
+import { eventService, reviewService } from "@/server/services";
 import BuyTicketForm from "./ui/BuyTicketForm";
 import ReviewForm from "./ui/ReviewForm";
 
@@ -20,13 +20,26 @@ export default async function EventPage({ params }: { params: { id: string } }) 
       <Card>
         <div className="p-5">
           <div className="text-slate-200">Подію не знайдено або вона недоступна.</div>
-          <Link href="/" className="inline-block mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
-            Повернутися на головну
+          <Link
+            href="/events"
+            className="inline-block mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+          >
+            До каталогу
           </Link>
         </div>
       </Card>
     );
   }
+
+  const minPrice = (event.ticketTypes as any[]).length
+    ? Math.min(...(event.ticketTypes as any[]).map((t) => t.price))
+    : null;
+
+  const loginHref = `/login?next=${encodeURIComponent(`/events/${event.id}`)}`;
+
+  const eligibility = me
+    ? await reviewService.getReviewEligibility({ eventId: event.id, userId: me.sub })
+    : { canReview: false, reason: "Увійдіть, щоб залишити відгук" };
 
   return (
     <div className="space-y-5">
@@ -40,12 +53,9 @@ export default async function EventPage({ params }: { params: { id: string } }) 
                 width={1200}
                 height={800}
                 className="h-[220px] w-full object-cover md:h-full"
-                unoptimized
               />
             ) : (
-              <div className="flex h-[220px] items-center justify-center text-slate-400 md:h-full">
-                Немає зображення
-              </div>
+              <div className="flex h-[220px] items-center justify-center text-slate-400 md:h-full">Немає зображення</div>
             )}
           </div>
 
@@ -56,7 +66,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
                 <FavoriteButton eventId={event.id} initial={(event as any).isFavorite} />
               ) : (
                 <Link
-                  href={`/login?next=${encodeURIComponent(`/events/${event.id}`)}`}
+                  href={loginHref}
                   className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition"
                 >
                   ☆ В обране
@@ -69,11 +79,10 @@ export default async function EventPage({ params }: { params: { id: string } }) 
               <Badge>{event.venue.title}</Badge>
               <Badge>{event.category.title}</Badge>
               <Badge>Рейтинг: {(event as any).avgRating}</Badge>
+              {minPrice != null ? <Badge>від {(minPrice / 100).toFixed(2)} грн</Badge> : <Badge>квитків немає</Badge>}
             </div>
 
-            <div className="text-sm text-slate-300">
-              Адреса: {event.venue.address}
-            </div>
+            <div className="text-sm text-slate-300">Адреса: {event.venue.address}</div>
 
             {event.venue.mapUrl && (
               <div>
@@ -86,8 +95,10 @@ export default async function EventPage({ params }: { params: { id: string } }) 
                 </Link>
               </div>
             )}
+
             <div className="text-sm text-slate-300">
-              Організатор: {event.organizer ? (
+              Організатор:{" "}
+              {event.organizer ? (
                 <Link href={"/organizers/" + event.organizer.id} className="hover:text-brand-blue transition">
                   {event.organizer.name || "Організатор"}
                 </Link>
@@ -95,6 +106,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
                 "Організатор"
               )}
             </div>
+
             <div className="text-slate-100/95 whitespace-pre-wrap">{event.description}</div>
           </div>
         </div>
@@ -104,8 +116,20 @@ export default async function EventPage({ params }: { params: { id: string } }) 
         <Card>
           <div className="p-5">
             <h2 className="text-lg font-semibold">Квитки</h2>
-            <p className="text-sm text-slate-300 mt-1">Оплата не інтегрована — замовлення фіксується в БД.</p>
-            <BuyTicketForm ticketTypes={event.ticketTypes as any} />
+            <p className="text-sm text-slate-300 mt-1">
+              Після оформлення замовлення його можна оплатити або скасувати в особистому кабінеті.
+            </p>
+            <BuyTicketForm ticketTypes={event.ticketTypes as any} isAuthed={!!me} loginHref={loginHref} />
+            {me && (
+              <div className="mt-3">
+                <Link
+                  href="/account/orders"
+                  className="inline-block rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+                >
+                  Мої замовлення
+                </Link>
+              </div>
+            )}
           </div>
         </Card>
 
@@ -113,7 +137,13 @@ export default async function EventPage({ params }: { params: { id: string } }) 
           <div className="p-5">
             <h2 className="text-lg font-semibold">Залишити відгук</h2>
             <p className="text-sm text-slate-300 mt-1">Відгук зʼявиться після модерації адміністратором.</p>
-            <ReviewForm eventId={event.id} />
+            <ReviewForm
+              eventId={event.id}
+              isAuthed={!!me}
+              canReview={eligibility.canReview}
+              reason={eligibility.reason}
+              loginHref={loginHref}
+            />
           </div>
         </Card>
       </div>
@@ -134,6 +164,15 @@ export default async function EventPage({ params }: { params: { id: string } }) 
           </div>
         </div>
       </Card>
+
+      <div>
+        <Link
+          href="/events"
+          className="inline-block rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+        >
+          ← До каталогу
+        </Link>
+      </div>
     </div>
   );
 }

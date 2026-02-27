@@ -17,7 +17,7 @@ export async function createOrder(input: { userId: string; ticketTypeId: string;
     const order = await tx.order.create({
       data: {
         userId: input.userId,
-        status: OrderStatus.CREATED,
+        status: OrderStatus.PENDING_PAYMENT,
         total,
         items: { create: [{ ticketTypeId: tt.id, quantity: input.quantity, unitPrice }] },
       },
@@ -29,6 +29,48 @@ export async function createOrder(input: { userId: string; ticketTypeId: string;
     });
 
     return { ok: true as const, orderId: order.id, total: order.total, eventId: tt.eventId };
+  });
+}
+
+export async function payOrder(input: { orderId: string; userId: string }) {
+  return await prisma.$transaction(async (tx) => {
+    const order = await tx.order.findFirst({
+      where: { id: input.orderId, userId: input.userId },
+      select: { id: true, status: true },
+    });
+
+    if (!order) return { ok: false as const, error: "Замовлення не знайдено" };
+
+    if (order.status === OrderStatus.PAID) return { ok: true as const };
+    if (order.status === OrderStatus.CANCELED) return { ok: false as const, error: "Замовлення скасовано" };
+
+    await tx.order.update({ where: { id: order.id }, data: { status: OrderStatus.PAID } });
+    return { ok: true as const };
+  });
+}
+
+export async function cancelOrder(input: { orderId: string; userId: string }) {
+  return await prisma.$transaction(async (tx) => {
+    const order = await tx.order.findFirst({
+      where: { id: input.orderId, userId: input.userId },
+      include: { items: { select: { ticketTypeId: true, quantity: true } } },
+    });
+
+    if (!order) return { ok: false as const, error: "Замовлення не знайдено" };
+
+    if (order.status === OrderStatus.CANCELED) return { ok: true as const };
+    if (order.status === OrderStatus.PAID) return { ok: false as const, error: "Неможливо скасувати оплачений квиток" };
+
+    await tx.order.update({ where: { id: order.id }, data: { status: OrderStatus.CANCELED } });
+
+    for (const it of order.items) {
+      await tx.ticketType.update({
+        where: { id: it.ticketTypeId },
+        data: { quantitySold: { decrement: it.quantity } },
+      });
+    }
+
+    return { ok: true as const };
   });
 }
 
@@ -52,9 +94,7 @@ export async function listUserOrders(userId: string) {
 
 export async function listOrganizerOrders(input: { organizerId: string; isAdmin: boolean }) {
   const items = await prisma.orderItem.findMany({
-    where: input.isAdmin
-      ? {}
-      : { ticketType: { event: { organizerId: input.organizerId } } },
+    where: input.isAdmin ? {} : { ticketType: { event: { organizerId: input.organizerId } } },
     include: {
       order: { include: { user: { select: { email: true, name: true } } } },
       ticketType: { include: { event: { include: { venue: true } } } },

@@ -65,10 +65,10 @@ model Venue {
   city      String
   mapUrl    String?
   createdAt DateTime @default(now())
+
   events    Event[]
 
   @@index([city])
-  @@unique([title, city])
 }
 
 model Event {

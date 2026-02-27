@@ -1,4 +1,4 @@
-import { PrismaClient, Role, EventStatus, ReviewStatus } from "@prisma/client";
+import { PrismaClient, Role, EventStatus, ReviewStatus, OrderStatus } from "@prisma/client";
 import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
@@ -69,42 +69,22 @@ async function main() {
       mapUrl: "https://www.google.com/maps/search/?api=1&query=%D0%9C%D0%B8%D1%85%D0%B0%D0%B9%D0%BB%D1%96%D0%B2%D1%81%D1%8C%D0%BA%D0%B0+%D0%B2%D1%83%D0%BB%D0%B8%D1%86%D1%8F+%D0%96%D0%B8%D1%82%D0%BE%D0%BC%D0%B8%D1%80",
     },
   ];
-
   for (const v of venues) {
-    await prisma.venue.upsert({
-      where: {
-        title_city: {
-          title: v.title,
-          city: v.city
-        }
-      },
-      update: {
-        address: v.address,
-        city: v.city,
-        mapUrl: v.mapUrl ?? null
-      },
-      create: {
-        title: v.title,
-        address: v.address,
-        city: v.city,
-        mapUrl: v.mapUrl ?? null
-      }
-    })
+    const existing = await prisma.venue.findFirst({ where: { title: v.title, city: v.city } });
+    if (existing) {
+      await prisma.venue.update({ where: { id: existing.id }, data: { address: v.address, mapUrl: v.mapUrl } });
+    } else {
+      await prisma.venue.create({ data: v });
+    }
   }
 
   const catConcerts = await prisma.category.findUniqueOrThrow({ where: { slug: "concerts" } });
   const catEx = await prisma.category.findUniqueOrThrow({ where: { slug: "exhibitions" } });
   const catEdu = await prisma.category.findUniqueOrThrow({ where: { slug: "education" } });
 
-  const vPark = await prisma.venue.findUniqueOrThrow({
-    where: { title_city: { title: "Міський парк культури", city: "Житомир" } }
-  })
-  const vGallery = await prisma.venue.findUniqueOrThrow({
-    where: { title_city: { title: "Міська галерея", city: "Житомир" } }
-  })
-  const vPhil = await prisma.venue.findUniqueOrThrow({
-    where: { title_city: { title: "Житомирська обласна філармонія", city: "Житомир" } }
-  })
+  const vPark = await prisma.venue.findFirstOrThrow({ where: { title: "Міський парк культури" } });
+  const vGallery = await prisma.venue.findFirstOrThrow({ where: { title: "Міська галерея" } });
+  const vPhil = await prisma.venue.findFirstOrThrow({ where: { title: "Житомирська обласна філармонія" } });
 
   const now = new Date();
 
