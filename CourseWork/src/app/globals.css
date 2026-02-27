@@ -12,9 +12,10 @@ html, body {
 
 body {
   background:
-    radial-gradient(1200px 600px at 10% -10%, rgba(56, 189, 248, 0.25), transparent 60%),
-    radial-gradient(900px 600px at 100% 10%, rgba(168, 85, 247, 0.18), transparent 55%),
-    radial-gradient(800px 600px at 30% 120%, rgba(34, 197, 94, 0.10), transparent 55%),
+    radial-gradient(1200px 600px at 10% -10%, rgba(38, 160, 216, 0.20), transparent 60%),
+    radial-gradient(900px 600px at 100% 10%, rgba(245, 148, 32, 0.18), transparent 55%),
+    radial-gradient(900px 650px at 25% 115%, rgba(153, 193, 79, 0.14), transparent 55%),
+    radial-gradient(700px 480px at 70% 120%, rgba(249, 205, 62, 0.10), transparent 55%),
     #020617;
 }
 

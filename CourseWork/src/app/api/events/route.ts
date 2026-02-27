@@ -1,21 +1,7 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import { getCurrentUserFromCookie } from "@/lib/auth";
-
-export async function GET() {
-  const events = await prisma.event.findMany({
-    orderBy: { startAt: "asc" },
-    include: { ticketTypes: true, reviews: true },
-  });
-
-  const mapped = events.map((e) => {
-    const avg =
-      e.reviews.length === 0 ? 0 : e.reviews.reduce((s, r) => s + r.rating, 0) / e.reviews.length;
-    return { ...e, avgRating: Number(avg.toFixed(2)) };
-  });
-
-  return NextResponse.json(mapped);
-}
+import { eventUpsertSchema } from "@/server/schemas";
+import { eventService } from "@/server/services";
 
 export async function POST(req: Request) {
   const me = await getCurrentUserFromCookie();
@@ -23,31 +9,29 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   }
 
-  const body = await req.json();
-  const title = String(body.title || "").trim();
-  const description = String(body.description || "").trim();
-  const city = String(body.city || "").trim();
-  const location = String(body.location || "").trim();
-  const category = String(body.category || "").trim();
-  const startAt = new Date(body.startAt);
-  const imageUrl = body.imageUrl ? String(body.imageUrl) : null;
+  const json = await req.json().catch(() => null);
+  const parsed = eventUpsertSchema.safeParse(json);
+  if (!parsed.success) return NextResponse.json({ error: "Некоректні дані" }, { status: 400 });
 
-  if (!title || !description || !city || !location || !category || isNaN(startAt.getTime())) {
-    return NextResponse.json({ error: "Некоректні дані" }, { status: 400 });
+  const startAt = new Date(parsed.data.startAt);
+  const endAt = parsed.data.endAt ? new Date(parsed.data.endAt) : null;
+
+  if (Number.isNaN(startAt.getTime()) || (endAt && Number.isNaN(endAt.getTime()))) {
+    return NextResponse.json({ error: "Некоректні дати" }, { status: 400 });
   }
 
-  const event = await prisma.event.create({
-    data: {
-      title,
-      description,
-      city,
-      location,
-      category,
-      startAt,
-      imageUrl,
-      organizerId: me.sub,
-    },
+  const res = await eventService.upsertEvent({
+    organizerId: me.sub,
+    isAdmin: me.role === "ADMIN",
+    title: parsed.data.title,
+    description: parsed.data.description,
+    categoryId: parsed.data.categoryId,
+    venueId: parsed.data.venueId,
+    imageUrl: parsed.data.imageUrl ? String(parsed.data.imageUrl) : null,
+    startAt,
+    endAt,
   });
 
-  return NextResponse.json(event);
+  if (!res.ok) return NextResponse.json({ error: res.error }, { status: 400 });
+  return NextResponse.json(res.event);
 }

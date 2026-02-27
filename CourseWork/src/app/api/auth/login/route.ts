@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/db";
 import { setAuthCookie, signToken } from "@/lib/auth";
+import { loginSchema } from "@/server/schemas";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const email = String(body.email || "").toLowerCase().trim();
-  const password = String(body.password || "");
+  const json = await req.json().catch(() => null);
+  const parsed = loginSchema.safeParse(json);
+  if (!parsed.success) {
+    return NextResponse.json({ error: "Некоректні дані" }, { status: 400 });
+  }
+
+  const { email, password } = parsed.data;
 
   const user = await prisma.user.findUnique({ where: { email } });
   if (!user) return NextResponse.json({ error: "Невірні дані" }, { status: 401 });

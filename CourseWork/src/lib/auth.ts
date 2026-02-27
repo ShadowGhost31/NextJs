@@ -11,7 +11,7 @@ function getSecret() {
 }
 
 export type TokenPayload = {
-  sub: string; // userId
+  sub: string;
   email: string;
   role: Role;
   name?: string | null;

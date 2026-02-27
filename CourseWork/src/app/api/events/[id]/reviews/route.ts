@@ -1,25 +1,28 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import { getCurrentUserFromCookie } from "@/lib/auth";
+import { reviewCreateSchema } from "@/server/schemas";
+import { reviewService } from "@/server/services";
 
 export async function POST(req: Request, { params }: { params: { id: string } }) {
   const me = await getCurrentUserFromCookie();
   if (!me) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
-  const rating = Number(body.rating);
-  const text = String(body.text || "").trim();
+  const json = await req.json().catch(() => null);
+  const parsed = reviewCreateSchema.safeParse({
+    rating: Number(json?.rating),
+    text: json?.text,
+  });
 
-  if (!Number.isInteger(rating) || rating < 1 || rating > 5 || text.length < 3) {
-    return NextResponse.json({ error: "Некоректні дані" }, { status: 400 });
-  }
+  if (!parsed.success) return NextResponse.json({ error: "Некоректні дані" }, { status: 400 });
 
-  try {
-    const review = await prisma.review.create({
-      data: { eventId: params.id, userId: me.sub, rating, text },
-    });
-    return NextResponse.json(review);
-  } catch {
-    return NextResponse.json({ error: "Ви вже залишали відгук" }, { status: 409 });
-  }
+  const res = await reviewService.createReview({
+    eventId: params.id,
+    userId: me.sub,
+    rating: parsed.data.rating,
+    text: parsed.data.text,
+  });
+
+  if (!res.ok) return NextResponse.json({ error: res.error }, { status: 409 });
+
+  return NextResponse.json(res.review);
 }

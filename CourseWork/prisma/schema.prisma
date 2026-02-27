@@ -13,6 +13,18 @@ enum Role {
   ADMIN
 }
 
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELED
+}
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum OrderStatus {
   CREATED
   PENDING_PAYMENT
@@ -28,40 +40,82 @@ model User {
   role         Role     @default(USER)
   createdAt    DateTime @default(now())
 
-  events       Event[]  @relation("OrganizerEvents")
-  reviews      Review[]
-  orders       Order[]
+  events           Event[]    @relation("OrganizerEvents")
+  reviews          Review[]
+  orders           Order[]
+  favorites        Favorite[]
+  moderatedReviews Review[]   @relation("ModeratedReviews")
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  title     String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+
+  events    Event[]
+
+  @@index([slug])
+}
+
+model Venue {
+  id        String   @id @default(cuid())
+  title     String
+  address   String
+  city      String
+  mapUrl    String?
+  createdAt DateTime @default(now())
+  events    Event[]
+
+  @@index([city])
+  @@unique([title, city])
 }
 
 model Event {
-  id          String   @id @default(cuid())
+  id          String      @id @default(cuid())
   title       String
   description String
   city        String
-  location    String
-  category    String
   imageUrl    String?
   startAt     DateTime
   endAt       DateTime?
-  createdAt   DateTime @default(now())
+  createdAt   DateTime    @default(now())
+  status      EventStatus @default(DRAFT)
+  publishedAt DateTime?
 
   organizerId String
-  organizer   User     @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  organizer   User        @relation("OrganizerEvents", fields: [organizerId], references: [id])
+
+  categoryId  String
+  category    Category    @relation(fields: [categoryId], references: [id])
+
+  venueId     String
+  venue       Venue       @relation(fields: [venueId], references: [id])
 
   ticketTypes TicketType[]
   reviews     Review[]
+  favorites   Favorite[]
+
+  @@index([status, startAt])
+  @@index([city, startAt])
+  @@index([categoryId, startAt])
+  @@index([venueId, startAt])
 }
 
 model TicketType {
   id            String   @id @default(cuid())
   eventId       String
   name          String
-  price         Int      // у копійках
+  price         Int
   quantityTotal Int
   quantitySold  Int      @default(0)
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
 
   event         Event    @relation(fields: [eventId], references: [id])
   orderItems    OrderItem[]
+
+  @@index([eventId])
 }
 
 model Order {
@@ -73,6 +127,8 @@ model Order {
 
   user      User        @relation(fields: [userId], references: [id])
   items     OrderItem[]
+
+  @@index([userId, createdAt])
 }
 
 model OrderItem {
@@ -84,18 +140,40 @@ model OrderItem {
 
   order        Order      @relation(fields: [orderId], references: [id])
   ticketType   TicketType @relation(fields: [ticketTypeId], references: [id])
+
+  @@index([orderId])
+  @@index([ticketTypeId])
 }
 
 model Review {
-  id        String   @id @default(cuid())
-  eventId   String
-  userId    String
-  rating    Int
-  text      String
-  createdAt DateTime @default(now())
+  id            String       @id @default(cuid())
+  eventId       String
+  userId        String
+  rating        Int
+  text          String
+  status        ReviewStatus @default(PENDING)
+  createdAt     DateTime     @default(now())
+  moderatedAt   DateTime?
+  moderatedById String?
+  rejectReason  String?
 
-  event     Event    @relation(fields: [eventId], references: [id])
-  user      User     @relation(fields: [userId], references: [id])
+  event         Event        @relation(fields: [eventId], references: [id])
+  user          User         @relation(fields: [userId], references: [id])
+  moderatedBy   User?        @relation("ModeratedReviews", fields: [moderatedById], references: [id])
 
   @@unique([eventId, userId])
+  @@index([status, createdAt])
+}
+
+model Favorite {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  event     Event    @relation(fields: [eventId], references: [id])
+
+  @@unique([userId, eventId])
+  @@index([userId, createdAt])
 }

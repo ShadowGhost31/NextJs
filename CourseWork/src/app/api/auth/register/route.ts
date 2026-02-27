@@ -1,16 +1,16 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
 import bcrypt from "bcryptjs";
+import { prisma } from "@/lib/db";
+import { registerSchema } from "@/server/schemas";
 
 export async function POST(req: Request) {
-  const body = await req.json();
-  const email = String(body.email || "").toLowerCase().trim();
-  const password = String(body.password || "");
-  const name = String(body.name || "").trim();
-
-  if (!email || !password || password.length < 6) {
+  const json = await req.json().catch(() => null);
+  const parsed = registerSchema.safeParse(json);
+  if (!parsed.success) {
     return NextResponse.json({ error: "Некоректні дані" }, { status: 400 });
   }
+
+  const { email, password, name } = parsed.data;
 
   const exists = await prisma.user.findUnique({ where: { email } });
   if (exists) {
@@ -19,7 +19,11 @@ export async function POST(req: Request) {
 
   const passwordHash = await bcrypt.hash(password, 10);
   await prisma.user.create({
-    data: { email, name: name || null, passwordHash },
+    data: {
+      email,
+      name: name ? String(name).trim() || null : null,
+      passwordHash,
+    },
   });
 
   return NextResponse.json({ ok: true });

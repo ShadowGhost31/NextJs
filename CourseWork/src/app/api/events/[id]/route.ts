@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { getCurrentUserFromCookie } from "@/lib/auth";
 
 export async function GET(_: Request, { params }: { params: { id: string } }) {
+  const me = await getCurrentUserFromCookie();
+
   const event = await prisma.event.findUnique({
     where: { id: params.id },
-    include: {
-      ticketTypes: true,
-      organizer: { select: { id: true, name: true, email: true } },
-      reviews: { include: { user: { select: { name: true, email: true } } }, orderBy: { createdAt: "desc" } },
-    },
+    select: { id: true, status: true, organizerId: true, title: true, description: true, startAt: true },
   });
 
   if (!event) return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  const avg =
-    event.reviews.length === 0 ? 0 : event.reviews.reduce((s, r) => s + r.rating, 0) / event.reviews.length;
+  const isOwner = me && (me.role === "ADMIN" || (me.role === "ORGANIZER" && event.organizerId === me.sub));
+  if (!isOwner && event.status !== "PUBLISHED") return NextResponse.json({ error: "Not found" }, { status: 404 });
 
-  return NextResponse.json({ ...event, avgRating: Number(avg.toFixed(2)) });
+  return NextResponse.json(event);
 }
