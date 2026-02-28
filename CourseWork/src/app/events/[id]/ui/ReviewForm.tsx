@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function ReviewForm({
@@ -16,6 +17,7 @@ export default function ReviewForm({
   reason: string | null;
   loginHref: string;
 }) {
+  const router = useRouter();
   const [rating, setRating] = useState(5);
   const [text, setText] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
@@ -35,7 +37,10 @@ export default function ReviewForm({
     setLoading(false);
 
     if (!res.ok) setMsg(data.error || "Помилка");
-    else setMsg("Відгук надіслано та очікує модерації.");
+    else {
+      setMsg("Відгук додано.");
+      router.refresh();
+    }
   }
 
   if (!isAuthed) {

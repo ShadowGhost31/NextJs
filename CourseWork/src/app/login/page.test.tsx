@@ -42,9 +42,6 @@ describe("LoginPage", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /увійти/i }));
 
-    await Promise.resolve();
-    await Promise.resolve();
-
-    expect(screen.getByText(/bad credentials/i)).toBeTruthy();
+    expect(await screen.findByText(/bad credentials/i)).toBeInTheDocument();
   });
 });

@@ -35,12 +35,12 @@ vi.mock("@/server/services", async () => {
 import HomePage from "./page";
 
 describe("HomePage", () => {
-  it("renders calendar and upcoming events", async () => {
+  it("renders upcoming events", async () => {
     const ui = await HomePage({ searchParams: {} });
     render(ui as any);
 
     expect(screen.getByText(/Афіша подій/)).toBeInTheDocument();
-    expect(screen.getByText(/Календар подій/)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Пошук подій/i)).toBeInTheDocument();
     expect(screen.getByText("Концерт")).toBeInTheDocument();
   });
 });

@@ -12,6 +12,7 @@ vi.mock("@/server/services", () => ({
   eventService: {
     parseDateOnly: () => null,
     parseOptionalPrice: () => null,
+    listCalendarMonthDays: async () => ({}),
     listCatalog: async () => ({ total: 1, events: [] }),
   },
 }));

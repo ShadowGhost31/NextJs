@@ -62,7 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             <div className="flex items-center justify-between gap-2 md:justify-end">
               <nav className="hidden lg:flex items-center gap-1">
                 <NavLink href="/events">Події</NavLink>
-                <NavLink href="/#calendar">Календар</NavLink>
+                <NavLink href="/events?calendar=1#calendar">Календар</NavLink>
                 {me && <NavLink href="/account">Кабінет</NavLink>}
                 {canPanel && <NavLink href="/panel">Панель</NavLink>}
                 {canAdmin && <NavLink href="/admin">Адмін</NavLink>}

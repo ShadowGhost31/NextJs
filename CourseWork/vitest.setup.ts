@@ -1,6 +1,9 @@
 import "@testing-library/jest-dom/vitest";
+import { webcrypto } from "node:crypto";
 import React from "react";
 import { vi } from "vitest";
+
+(globalThis as any).crypto = webcrypto;
 
 vi.mock("next/link", () => {
   return {

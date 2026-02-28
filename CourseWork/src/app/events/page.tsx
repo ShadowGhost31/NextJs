@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import Card from "@/components/Card";
+import CalendarWidget from "@/components/CalendarWidget";
 import EventCard from "@/components/EventCard";
 import { getCurrentUserFromCookie } from "@/lib/auth";
 import { catalogQuerySchema } from "@/server/schemas";
@@ -8,12 +9,28 @@ import { eventService, metaService } from "@/server/services";
 
 export const dynamic = "force-dynamic";
 
+function parseCal(v: string | undefined) {
+  const s = (v || "").trim();
+  const m = /^\d{4}-\d{2}$/.exec(s);
+  if (!m) return null;
+  const [y, mo] = s.split("-").map(Number);
+  if (!y || !mo) return null;
+  return { year: y, month: mo - 1 };
+}
+
 export default async function EventsCatalogPage({
   searchParams,
 }: {
   searchParams: Record<string, string | string[] | undefined>;
 }) {
   const me = await getCurrentUserFromCookie();
+
+  const calOverride = parseCal(typeof searchParams.cal === "string" ? searchParams.cal : undefined);
+  const today = new Date();
+  const calYear = calOverride?.year ?? today.getFullYear();
+  const calMonth = calOverride?.month ?? today.getMonth();
+  const calendarOpen = String(searchParams.calendar || "") === "1";
+  const counts = await eventService.listCalendarMonthDays({ year: calYear, month: calMonth });
 
   const raw: any = {};
   for (const [k, v] of Object.entries(searchParams)) {
@@ -77,6 +94,18 @@ export default async function EventsCatalogPage({
     return qs ? `/events?${qs}#list` : "/events#list";
   }
 
+  const calendarHref = (() => {
+    const params = new URLSearchParams();
+    for (const [k, v] of Object.entries(qParsed)) {
+      if (!v) continue;
+      if (k === "page") continue;
+      params.set(k, String(v));
+    }
+    params.set("calendar", "1");
+    const qs = params.toString();
+    return qs ? `/events?${qs}#calendar` : "/events?calendar=1#calendar";
+  })();
+
   function Chip({
     href,
     active,
@@ -108,12 +137,30 @@ export default async function EventsCatalogPage({
           <p className="text-sm text-slate-600 mt-1">Пошук, фільтри та сортування • як на афішах типу Karabas</p>
         </div>
         <Link
-          href="/#calendar"
+          href={calendarHref}
           className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
         >
           Календар
         </Link>
       </div>
+
+      <div id="calendar" className="scroll-mt-24" />
+      <Card>
+        <div className="p-4 md:p-5">
+          <details open={calendarOpen} className="group">
+            <summary className="flex cursor-pointer list-none items-center justify-between rounded-2xl border border-slate-200 bg-white px-4 py-3">
+              <div>
+                <div className="text-sm font-semibold text-slate-900">Календар подій</div>
+                <div className="text-xs text-slate-600 mt-0.5">Натисни на день, щоб застосувати фільтр дати</div>
+              </div>
+              <div className="text-slate-500 group-open:rotate-180 transition">▾</div>
+            </summary>
+            <div className="mt-4">
+              <CalendarWidget year={calYear} month={calMonth} counts={counts} eventsPath="/events" />
+            </div>
+          </details>
+        </div>
+      </Card>
 
       <div className="space-y-2">
         <div className="flex items-center gap-2 overflow-x-auto pb-1">

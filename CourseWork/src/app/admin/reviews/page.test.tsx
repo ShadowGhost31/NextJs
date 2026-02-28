@@ -7,9 +7,10 @@ vi.mock("@/server/guards", () => ({
 
 vi.mock("@/server/services", () => ({
   reviewService: {
-    listPendingReviews: vi.fn(async () => [
+    listRecentReviews: vi.fn(async () => [
       {
         id: "r1",
+        eventId: "e1",
         rating: 5,
         text: "Класна подія!",
         createdAt: new Date("2026-02-02"),
@@ -20,17 +21,13 @@ vi.mock("@/server/services", () => ({
   },
 }));
 
-vi.mock("../actions", () => ({
-  moderateReviewAction: vi.fn(async () => undefined),
-}));
-
 import AdminReviewsPage from "./page";
 
 describe("AdminReviewsPage", () => {
-  it("renders pending reviews", async () => {
+  it("renders reviews list", async () => {
     const ui = await AdminReviewsPage({ searchParams: {} });
     render(ui as any);
-    expect(screen.getByText(/Модерація відгуків/)).toBeInTheDocument();
+    expect(screen.getByText(/Відгуки/)).toBeInTheDocument();
     expect(screen.getByText("Класна подія!")).toBeInTheDocument();
   });
 });

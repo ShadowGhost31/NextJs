@@ -36,11 +36,26 @@ export async function createReview(input: { eventId: string; userId: string; rat
       userId: input.userId,
       rating: input.rating,
       text: input.text,
-      status: ReviewStatus.PENDING,
+      status: ReviewStatus.APPROVED,
     },
   });
 
   return { ok: true as const, review };
+}
+
+export async function listRecentReviews(limit = 50) {
+  return await prisma.review.findMany({
+    take: limit,
+    include: {
+      user: { select: { email: true, name: true } },
+      event: { include: { venue: true } },
+    },
+    orderBy: { createdAt: "desc" },
+  });
+}
+
+export async function deleteReview(reviewId: string) {
+  return await prisma.review.delete({ where: { id: reviewId } });
 }
 
 export async function listUserReviews(userId: string) {

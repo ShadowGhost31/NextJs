@@ -2,17 +2,20 @@ import Image from "next/image";
 import Link from "next/link";
 import Card from "@/components/Card";
 import Badge from "@/components/Badge";
+import ConfirmForm from "@/components/ConfirmForm";
 import FavoriteButton from "@/components/FavoriteButton";
 import { formatDateTime } from "@/lib/utils";
 import { getCurrentUserFromCookie } from "@/lib/auth";
 import { eventService, reviewService } from "@/server/services";
 import BuyTicketForm from "./ui/BuyTicketForm";
 import ReviewForm from "./ui/ReviewForm";
+import { deleteReviewAction } from "./actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function EventPage({ params }: { params: { id: string } }) {
   const me = await getCurrentUserFromCookie();
+  const isAdmin = me?.role === "ADMIN";
   const event = await eventService.getPublicEvent(params.id, me?.sub || null);
 
   if (!event) {
@@ -145,7 +148,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
         <Card>
           <div className="p-5">
             <h2 className="text-lg font-semibold">Залишити відгук</h2>
-            <p className="text-sm text-slate-600 mt-1">Відгук зʼявиться після модерації адміністратором.</p>
+            <p className="text-sm text-slate-600 mt-1">Відгук з’явиться на сторінці одразу після відправки.</p>
             <ReviewForm
               eventId={event.id}
               isAuthed={!!me}
@@ -164,8 +167,18 @@ export default async function EventPage({ params }: { params: { id: string } }) 
             {event.reviews.length === 0 && <div className="text-slate-600">Поки немає відгуків.</div>}
             {event.reviews.map((r) => (
               <div key={r.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                <div className="text-sm text-slate-600">
-                  {r.user?.name || "Користувач"} • Оцінка: {r.rating} • {formatDateTime(new Date(r.createdAt))}
+                <div className="flex items-start justify-between gap-2">
+                  <div className="text-sm text-slate-600">
+                    {r.user?.name || "Користувач"} • Оцінка: {r.rating} • {formatDateTime(new Date(r.createdAt))}
+                  </div>
+
+                  {isAdmin && (
+                    <ConfirmForm action={deleteReviewAction.bind(null, r.id, event.id)}>
+                      <button className="rounded-2xl border border-slate-300 bg-white px-3 py-1.5 text-xs text-slate-800 hover:bg-slate-50">
+                        Видалити
+                      </button>
+                    </ConfirmForm>
+                  )}
                 </div>
                 <div className="mt-2 text-slate-800">{r.text}</div>
               </div>

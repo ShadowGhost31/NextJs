@@ -45,9 +45,6 @@ describe("RegisterPage", () => {
 
     fireEvent.click(screen.getByRole("button", { name: /зареєструватися/i }));
 
-    await Promise.resolve();
-    await Promise.resolve();
-
-    expect(screen.getByText(/email already exists/i)).toBeTruthy();
+    expect(await screen.findByText(/email already exists/i)).toBeInTheDocument();
   });
 });

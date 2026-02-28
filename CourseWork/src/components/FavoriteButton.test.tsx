@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import FavoriteButton from "./FavoriteButton";
 
 const fetchSpy = vi.fn();
@@ -35,10 +35,9 @@ describe("FavoriteButton", () => {
     fireEvent.click(btn);
     expect(screen.getByRole("button").textContent).toContain("В обраному");
 
-    await Promise.resolve();
-    await Promise.resolve();
-
-    expect(screen.getByRole("button").textContent).toContain("В обране");
+    await waitFor(() => {
+      expect(screen.getByRole("button").textContent).toContain("В обране");
+    });
   });
 
   it("reverts optimistic state on network error", async () => {
@@ -50,9 +49,8 @@ describe("FavoriteButton", () => {
     fireEvent.click(btn);
     expect(screen.getByRole("button").textContent).toContain("В обраному");
 
-    await Promise.resolve();
-    await Promise.resolve();
-
-    expect(screen.getByRole("button").textContent).toContain("В обране");
+    await waitFor(() => {
+      expect(screen.getByRole("button").textContent).toContain("В обране");
+    });
   });
 });

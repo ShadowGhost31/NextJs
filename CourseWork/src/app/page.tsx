@@ -1,20 +1,10 @@
 import Link from "next/link";
 import Card from "@/components/Card";
-import CalendarWidget from "@/components/CalendarWidget";
 import EventCard from "@/components/EventCard";
 import { getCurrentUserFromCookie } from "@/lib/auth";
 import { eventService } from "@/server/services";
 
 export const dynamic = "force-dynamic";
-
-function parseCal(v: string | undefined) {
-  const s = (v || "").trim();
-  const m = /^\d{4}-\d{2}$/.exec(s);
-  if (!m) return null;
-  const [y, mo] = s.split("-").map(Number);
-  if (!y || !mo) return null;
-  return { year: y, month: mo - 1 };
-}
 
 export default async function HomePage({
   searchParams,
@@ -22,12 +12,6 @@ export default async function HomePage({
   searchParams: Record<string, string | string[] | undefined>;
 }) {
   const me = await getCurrentUserFromCookie();
-
-  const calOverride = parseCal(typeof searchParams.cal === "string" ? searchParams.cal : undefined);
-  const today = new Date();
-  const calYear = calOverride?.year ?? today.getFullYear();
-  const calMonth = calOverride?.month ?? today.getMonth();
-  const counts = await eventService.listCalendarMonthDays({ year: calYear, month: calMonth });
 
   const { events } = await eventService.listCatalog({
     sort: "soon",
@@ -41,7 +25,7 @@ export default async function HomePage({
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold tracking-tight">Афіша подій • Житомир</h1>
         <p className="text-slate-600 text-sm">
-          Каталог подій, календар на головній, квитки, відгуки, кабінет, панель організатора та адмінка.
+          Каталог подій, календар як віджет у каталозі, квитки, відгуки, кабінет, панель організатора та адмінка.
         </p>
       </div>
 
@@ -65,30 +49,6 @@ export default async function HomePage({
             >
               Каталог
             </Link>
-            <Link
-              href="/#calendar"
-              className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
-            >
-              Календар
-            </Link>
-          </div>
-        </div>
-      </Card>
-
-      <div id="calendar" className="scroll-mt-24" />
-      <Card>
-        <div className="p-5">
-          <div className="flex items-end justify-between gap-3">
-            <div>
-              <h2 className="text-xl font-semibold">Календар подій</h2>
-              <div className="text-sm text-slate-600 mt-1">
-                Натисни на день, щоб перейти до каталогу з фільтром дати
-              </div>
-            </div>
-            <div className="text-xs text-slate-500">Місто: Житомир</div>
-          </div>
-          <div className="mt-4">
-            <CalendarWidget year={calYear} month={calMonth} counts={counts} eventsPath="/events" />
           </div>
         </div>
       </Card>

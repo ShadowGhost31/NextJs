@@ -81,10 +81,14 @@ async function main() {
   const catConcerts = await prisma.category.findUniqueOrThrow({ where: { slug: "concerts" } });
   const catEx = await prisma.category.findUniqueOrThrow({ where: { slug: "exhibitions" } });
   const catEdu = await prisma.category.findUniqueOrThrow({ where: { slug: "education" } });
+  const catTheatre = await prisma.category.findUniqueOrThrow({ where: { slug: "theatre" } });
+  const catSport = await prisma.category.findUniqueOrThrow({ where: { slug: "sport" } });
+  const catKids = await prisma.category.findUniqueOrThrow({ where: { slug: "kids" } });
 
   const vPark = await prisma.venue.findFirstOrThrow({ where: { title: "Міський парк культури" } });
   const vGallery = await prisma.venue.findFirstOrThrow({ where: { title: "Міська галерея" } });
   const vPhil = await prisma.venue.findFirstOrThrow({ where: { title: "Житомирська обласна філармонія" } });
+  const vDrama = await prisma.venue.findFirstOrThrow({ where: { title: "Житомирський драмтеатр" } });
 
   const now = new Date();
 
@@ -139,6 +143,96 @@ async function main() {
       organizerId: organizer.id,
       status: EventStatus.DRAFT,
       ticketTypes: { create: [{ name: "Реєстрація", price: 0, quantityTotal: 120 }] },
+    },
+  });
+
+  const e4 = await prisma.event.create({
+    data: {
+      title: "Театральна вистава: Ревізор",
+      description: "Класична комедія на сцені драмтеатру. Рекомендуємо приходити за 15 хв до початку.",
+      city: "Житомир",
+      venueId: vDrama.id,
+      categoryId: catTheatre.id,
+      startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 18, 30),
+      endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 21, 0),
+      imageUrl: "https://images.unsplash.com/photo-1526676037777-05a232554f77?auto=format&fit=crop&w=1600&q=80",
+      organizerId: organizer.id,
+      status: EventStatus.PUBLISHED,
+      publishedAt: new Date(),
+      ticketTypes: {
+        create: [
+          { name: "Партер", price: 25000, quantityTotal: 120 },
+          { name: "Балкон", price: 15000, quantityTotal: 80 },
+        ],
+      },
+    },
+  });
+
+  const e5 = await prisma.event.create({
+    data: {
+      title: "Забіг у парку: 5 км для всіх",
+      description: "Дружній забіг для новачків і досвідчених. Розминка, вода та медпункт на локації.",
+      city: "Житомир",
+      venueId: vPark.id,
+      categoryId: catSport.id,
+      startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 8, 10, 0),
+      endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 8, 12, 0),
+      imageUrl: "https://images.unsplash.com/photo-1530549387789-4c1017266634?auto=format&fit=crop&w=1600&q=80",
+      organizerId: organizer.id,
+      status: EventStatus.PUBLISHED,
+      publishedAt: new Date(),
+      ticketTypes: { create: [{ name: "Реєстрація", price: 0, quantityTotal: 500 }] },
+    },
+  });
+
+  const e6 = await prisma.event.create({
+    data: {
+      title: "Дитячий майстер-клас: малюємо аквареллю",
+      description: "Творчий майстер-клас для дітей 6–12 років. Матеріали надаються.",
+      city: "Житомир",
+      venueId: vGallery.id,
+      categoryId: catKids.id,
+      startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 9, 14, 0),
+      endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 9, 15, 30),
+      imageUrl: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1600&q=80",
+      organizerId: organizer.id,
+      status: EventStatus.PUBLISHED,
+      publishedAt: new Date(),
+      ticketTypes: { create: [{ name: "Квиток", price: 12000, quantityTotal: 40 }] },
+    },
+  });
+
+  const e7 = await prisma.event.create({
+    data: {
+      title: "Кінопоказ під відкритим небом",
+      description: "Вечірній кінопоказ просто неба. Пледи, попкорн та локація біля центральної алеї.",
+      city: "Житомир",
+      venueId: vPark.id,
+      categoryId: catConcerts.id,
+      startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 12, 20, 0),
+      endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 12, 22, 30),
+      imageUrl: "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1600&q=80",
+      organizerId: organizer.id,
+      status: EventStatus.PUBLISHED,
+      publishedAt: new Date(),
+      ticketTypes: { create: [{ name: "Вхід", price: 10000, quantityTotal: 300 }] },
+    },
+  });
+
+  const e8 = await prisma.event.create({
+    data: {
+      title: "Воркшоп: UX для початківців",
+      description: "Практика прототипування, дизайн-системи та підхід до користувацьких сценаріїв.",
+      city: "Житомир",
+      venueId: vPhil.id,
+      categoryId: catEdu.id,
+      startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 15, 16, 0),
+      endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 15, 18, 30),
+      imageUrl: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1600&q=80",
+      organizerId: organizer.id,
+      status: EventStatus.PUBLISHED,
+      publishedAt: new Date(),
+      ticketTypes: { create: [{ name: "Місце", price: 18000, quantityTotal: 80 }] },
     },
   });
 
