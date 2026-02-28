@@ -6,10 +6,12 @@
   <component name="ChangeListManager">
     <list default="true" id="ac919ddd-23fb-4217-bf90-3947d3292380" name="Changes" comment="feat(events): move calendar widget to /events (remove from home)&#10;feat(reviews): auto-approve reviews on create&#10;feat(reviews): allow admin to delete reviews on event page&#10;refactor(admin): update admin reviews page for new flow&#10;feat(seed): add more demo events (8 total)&#10;test(vitest): fix JSX runtime + WebCrypto, update tests">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next-env.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next-env.d.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/prisma/migrations/migration_lock.toml" beforeDir="false" afterPath="$PROJECT_DIR$/prisma/migrations/migration_lock.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/tsconfig.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vitest.setup.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vitest.setup.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/admin/reviews/page.test.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/login/page.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/login/page.test.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/panel/page.test.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/register/page.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/register/page.test.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/FavoriteButton.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FavoriteButton.test.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/auth.test.ts" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -103,7 +105,7 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1772246474334</updated>
-      <workItem from="1772246476098" duration="630000" />
+      <workItem from="1772246476098" duration="2215000" />
     </task>
     <task id="LOCAL-00001" summary="feat(events): move calendar widget to /events (remove from home)&#10;feat(reviews): auto-approve reviews on create&#10;feat(reviews): allow admin to delete reviews on event page&#10;refactor(admin): update admin reviews page for new flow&#10;feat(seed): add more demo events (8 total)&#10;test(vitest): fix JSX runtime + WebCrypto, update tests">
       <option name="closed" value="true" />

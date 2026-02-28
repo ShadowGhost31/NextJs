@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import RegisterPage from "./page";
 
 const fetchSpy = vi.fn();
@@ -8,6 +8,10 @@ describe("RegisterPage", () => {
   beforeEach(() => {
     fetchSpy.mockReset();
     global.fetch = fetchSpy;
+  });
+
+  afterEach(() => {
+    cleanup();
   });
 
   it("renders and submits", async () => {
