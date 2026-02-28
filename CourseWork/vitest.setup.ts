@@ -3,7 +3,18 @@ import { webcrypto } from "node:crypto";
 import React from "react";
 import { vi } from "vitest";
 
-(globalThis as any).crypto = webcrypto;
+const g = globalThis as any;
+
+if (!g.crypto) {
+  g.crypto = webcrypto;
+} else {
+  if (!g.crypto.subtle && webcrypto.subtle) {
+    try { g.crypto.subtle = webcrypto.subtle; } catch {}
+  }
+  if (!g.crypto.getRandomValues && webcrypto.getRandomValues) {
+    try { g.crypto.getRandomValues = webcrypto.getRandomValues.bind(webcrypto); } catch {}
+  }
+}
 
 vi.mock("next/link", () => {
   return {
