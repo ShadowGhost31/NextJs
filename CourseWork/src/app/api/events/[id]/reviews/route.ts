@@ -9,8 +9,8 @@ export async function POST(req: Request, { params }: { params: { id: string } })
 
   const json = await req.json().catch(() => null);
   const parsed = reviewCreateSchema.safeParse({
-    rating: Number(json?.rating),
-    text: json?.text,
+    rating: Number((json as any)?.rating),
+    text: String((json as any)?.text ?? ""),
   });
 
   if (!parsed.success) return NextResponse.json({ error: "Некоректні дані" }, { status: 400 });
@@ -22,10 +22,7 @@ export async function POST(req: Request, { params }: { params: { id: string } })
     text: parsed.data.text,
   });
 
-  if (!res.ok) {
-    const status = res.error.includes("вже") ? 409 : 403;
-    return NextResponse.json({ error: res.error }, { status });
-  }
+  if (!res.ok) return NextResponse.json({ error: res.error }, { status: 409 });
 
-  return NextResponse.json(res.review);
+  return NextResponse.json({ ok: true, reviewId: res.review.id });
 }

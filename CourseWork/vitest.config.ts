@@ -7,7 +7,26 @@ const __dirname = dirname(__filename);
 
 export default defineConfig({
   test: {
-    environment: "node",
+    environment: "jsdom",
+    setupFiles: ["./vitest.setup.ts"],
+    css: true,
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      include: ["src/**/*.{ts,tsx}"],
+      exclude: [
+        "**/*.d.ts",
+        "src/app/**/actions.ts",
+        "src/app/**/route.ts",
+        "src/lib/db.ts",
+      ],
+      thresholds: {
+        lines: 40,
+        functions: 40,
+        branches: 40,
+        statements: 40,
+      },
+    },
   },
   resolve: {
     alias: {
