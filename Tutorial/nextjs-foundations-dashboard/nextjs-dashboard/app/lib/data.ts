@@ -167,6 +167,8 @@ export async function fetchInvoiceById(id: string) {
   }
 }
 
+const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
+const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
 export async function fetchCustomers() {
   try {
     const customers = await sql<CustomerField[]>`
@@ -183,7 +185,13 @@ export async function fetchCustomers() {
     throw new Error('Failed to fetch all customers.');
   }
 }
-
+// Fetch the last 5 invoices, sorted by date
+const data = await sql<LatestInvoiceRaw[]>`
+  SELECT invoices.amount, customers.name, customers.image_url, customers.email
+  FROM invoices
+  JOIN customers ON invoices.customer_id = customers.id
+  ORDER BY invoices.date DESC
+  LIMIT 5`;
 export async function fetchFilteredCustomers(query: string) {
   try {
     const data = await sql<CustomersTableType[]>`
