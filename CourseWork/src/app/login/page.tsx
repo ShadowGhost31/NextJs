@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Card from "@/components/Card";
+import { loginSchema } from "@/server/schemas";
+import { zodToFieldErrors } from "@/lib/validation";
 
 export default function LoginPage() {
   const r = useRouter();
@@ -13,52 +15,79 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
   async function submit() {
     setMsg(null);
+    setFieldErrors({});
     setLoading(true);
+
+    const parsed = loginSchema.safeParse({ email, password });
+    if (!parsed.success) {
+      const fe = zodToFieldErrors(parsed.error);
+      setFieldErrors(fe);
+      setMsg(fe._form || "Перевірте введені дані");
+      setLoading(false);
+      return;
+    }
 
     const res = await fetch("/api/auth/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify(parsed.data),
     });
 
     const data = await res.json().catch(() => ({}));
     setLoading(false);
 
-    if (!res.ok) setMsg(data.error || "Помилка");
-    else {
-      r.push(next);
-      r.refresh();
+    if (!res.ok) {
+      if (data?.fieldErrors && typeof data.fieldErrors === "object") {
+        setFieldErrors(data.fieldErrors);
+      }
+      setMsg(data.error || "Помилка");
+      return;
     }
+
+    r.push(next);
+    r.refresh();
   }
+
+  const inputBase =
+    "w-full rounded-2xl border bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue";
 
   return (
     <div className="mx-auto max-w-md space-y-4">
       <div className="text-center">
         <h1 className="text-2xl font-semibold tracking-tight">Вхід</h1>
-        <p className="text-sm text-slate-600 mt-1">
-          Увійди, щоб додавати відгуки, оформлювати квитки та керувати замовленнями.
-        </p>
+        <p className="text-sm text-slate-600 mt-1">Увійди, щоб додавати відгуки, оформлювати квитки та керувати замовленнями.</p>
       </div>
 
       <Card>
         <div className="p-5 space-y-3">
-          <input
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Email"
-          />
-          <input
-            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="Пароль"
-          />
+          <div>
+            <input
+              className={`${inputBase} ${fieldErrors.email ? "border-rose-400" : "border-slate-300"}`}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Email"
+              inputMode="email"
+              autoComplete="email"
+            />
+            {fieldErrors.email && <div className="mt-1 text-xs text-rose-600">{fieldErrors.email}</div>}
+          </div>
+
+          <div>
+            <input
+              className={`${inputBase} ${fieldErrors.password ? "border-rose-400" : "border-slate-300"}`}
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Пароль"
+              autoComplete="current-password"
+            />
+            {fieldErrors.password && <div className="mt-1 text-xs text-rose-600">{fieldErrors.password}</div>}
+          </div>
 
           <button
             onClick={submit}
@@ -82,9 +111,7 @@ export default function LoginPage() {
             </Link>
           </div>
 
-          <div className="text-xs text-slate-500">
-            Демо: user@demo.com / user123 • organizer@demo.com / organizer123 • admin@demo.com / admin123
-          </div>
+          <div className="text-xs text-slate-500">Демо: user@demo.com / user123 • organizer@demo.com / organizer123 • admin@demo.com / admin123</div>
         </div>
       </Card>
     </div>

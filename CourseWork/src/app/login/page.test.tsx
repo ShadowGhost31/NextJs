@@ -41,7 +41,7 @@ describe("LoginPage", () => {
       target: { value: "user@demo.com" },
     });
     fireEvent.change(screen.getByPlaceholderText("Пароль"), {
-      target: { value: "wrong" },
+      target: { value: "wrong12" },
     });
 
     fireEvent.click(screen.getByRole("button", { name: /увійти/i }));

@@ -25,6 +25,7 @@ export async function listCatalog(params: {
   const include = {
     category: true,
     venue: true,
+    image: { select: { id: true } },
     ticketTypes: { where: { isActive: true } },
     reviews: { where: { status: ReviewStatus.APPROVED } },
     favorites: params.userId ? { where: { userId: params.userId }, select: { id: true } } : false,
@@ -45,7 +46,8 @@ export async function listCatalog(params: {
     const avg = e.reviews.length ? e.reviews.reduce((s: number, r: any) => s + r.rating, 0) / e.reviews.length : 0;
     const minPrice = e.ticketTypes.length ? Math.min(...e.ticketTypes.map((t: any) => t.price)) : null;
     const isFav = params.userId ? e.favorites.length > 0 : false;
-    return { ...e, avgRating: Number(avg.toFixed(2)), minPrice, isFavorite: isFav };
+    const imageUrl = e.image ? `/api/events/${e.id}/image` : null;
+    return { ...e, imageUrl, avgRating: Number(avg.toFixed(2)), minPrice, isFavorite: isFav };
   });
 
   if (params.sort === "rating") {
@@ -69,6 +71,7 @@ export async function getPublicEvent(eventId: string, userId?: string | null) {
     include: {
       category: true,
       venue: true,
+      image: { select: { id: true } },
       organizer: { select: { id: true, name: true } },
       ticketTypes: { where: { isActive: true }, orderBy: { createdAt: "asc" } },
       reviews: {
@@ -84,7 +87,8 @@ export async function getPublicEvent(eventId: string, userId?: string | null) {
 
   const avg = event.reviews.length ? event.reviews.reduce((s, r) => s + r.rating, 0) / event.reviews.length : 0;
   const isFavorite = userId ? (event as any).favorites.length > 0 : false;
-  return { ...event, avgRating: Number(avg.toFixed(2)), isFavorite };
+  const imageUrl = (event as any).image ? `/api/events/${event.id}/image` : null;
+  return { ...(event as any), imageUrl, avgRating: Number(avg.toFixed(2)), isFavorite };
 }
 
 export async function listCalendarMonthDays(input: { year: number; month: number }) {
@@ -118,6 +122,7 @@ export async function listOrganizerEvents(organizerId: string) {
     include: {
       category: true,
       venue: true,
+      image: { select: { id: true } },
       ticketTypes: true,
       reviews: { where: { status: ReviewStatus.APPROVED } },
     },
@@ -126,14 +131,19 @@ export async function listOrganizerEvents(organizerId: string) {
 }
 
 export async function getOrganizerEvent(eventId: string, organizerId: string, isAdmin: boolean) {
-  return await prisma.event.findFirst({
+  const event = await prisma.event.findFirst({
     where: isAdmin ? { id: eventId } : { id: eventId, organizerId },
     include: {
       category: true,
       venue: true,
+      image: { select: { id: true } },
       ticketTypes: { orderBy: { createdAt: "asc" } },
     },
   });
+
+  if (!event) return null;
+  const imageUrl = (event as any).image ? `/api/events/${event.id}/image` : null;
+  return { ...(event as any), imageUrl };
 }
 
 export async function upsertEvent(input: {
@@ -144,7 +154,6 @@ export async function upsertEvent(input: {
   description: string;
   categoryId: string;
   venueId: string;
-  imageUrl?: string | null;
   startAt: Date;
   endAt?: Date | null;
 }) {
@@ -167,7 +176,6 @@ export async function upsertEvent(input: {
         categoryId: input.categoryId,
         venueId: input.venueId,
         city: venue.city,
-        imageUrl: input.imageUrl || null,
         startAt: input.startAt,
         endAt: input.endAt || null,
       },
@@ -183,7 +191,6 @@ export async function upsertEvent(input: {
       categoryId: input.categoryId,
       venueId: input.venueId,
       city: venue.city,
-      imageUrl: input.imageUrl || null,
       startAt: input.startAt,
       endAt: input.endAt || null,
       organizerId: input.organizerId,
@@ -231,6 +238,7 @@ export async function deleteEventIfAllowed(input: { eventId: string; actorId: st
     await tx.favorite.deleteMany({ where: { eventId: event.id } });
     await tx.review.deleteMany({ where: { eventId: event.id } });
     await tx.ticketType.deleteMany({ where: { eventId: event.id } });
+    await tx.eventImage.deleteMany({ where: { eventId: event.id } });
     await tx.event.delete({ where: { id: event.id } });
   });
 

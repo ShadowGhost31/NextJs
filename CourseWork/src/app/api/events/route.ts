@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getCurrentUserFromCookie } from "@/lib/auth";
 import { eventUpsertSchema } from "@/server/schemas";
 import { eventService } from "@/server/services";
+import { saveEventImageFromUrl } from "@/server/uploads";
 
 export async function POST(req: Request) {
   const me = await getCurrentUserFromCookie();
@@ -27,11 +28,17 @@ export async function POST(req: Request) {
     description: parsed.data.description,
     categoryId: parsed.data.categoryId,
     venueId: parsed.data.venueId,
-    imageUrl: parsed.data.imageUrl ? String(parsed.data.imageUrl) : null,
     startAt,
     endAt,
   });
 
   if (!res.ok) return NextResponse.json({ error: res.error }, { status: 400 });
+
+  const imageUrl = parsed.data.imageUrl ? String(parsed.data.imageUrl).trim() : "";
+  if (imageUrl) {
+    const saved = await saveEventImageFromUrl({ eventId: res.event.id, url: imageUrl });
+    if (!saved.ok) return NextResponse.json({ error: saved.error }, { status: 400 });
+  }
+
   return NextResponse.json(res.event);
 }

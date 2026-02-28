@@ -92,6 +92,8 @@ async function main() {
 
   const now = new Date();
 
+  const imageLinks: Array<{ eventId: string; url: string }> = [];
+
   const e1 = await prisma.event.create({
     data: {
       title: "Open-air концерт у центрі",
@@ -101,7 +103,6 @@ async function main() {
       categoryId: catConcerts.id,
       startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 19, 0),
       endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 3, 22, 0),
-      imageUrl: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1600&q=80",
       organizerId: organizer.id,
       status: EventStatus.PUBLISHED,
       publishedAt: new Date(),
@@ -114,6 +115,8 @@ async function main() {
     },
   });
 
+  imageLinks.push({ eventId: e1.id, url: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1600&q=80" });
+
   const e2 = await prisma.event.create({
     data: {
       title: "Виставка сучасного мистецтва",
@@ -123,13 +126,14 @@ async function main() {
       categoryId: catEx.id,
       startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7, 12, 0),
       endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 7, 18, 0),
-      imageUrl: "https://images.unsplash.com/photo-1520697222865-7b2488da2e09?auto=format&fit=crop&w=1600&q=80",
       organizerId: organizer.id,
       status: EventStatus.PUBLISHED,
       publishedAt: new Date(),
       ticketTypes: { create: [{ name: "Вхідний квиток", price: 8000, quantityTotal: 300 }] },
     },
   });
+
+  imageLinks.push({ eventId: e2.id, url: "https://images.unsplash.com/photo-1520697222865-7b2488da2e09?auto=format&fit=crop&w=1600&q=80" });
 
   const e3 = await prisma.event.create({
     data: {
@@ -155,7 +159,6 @@ async function main() {
       categoryId: catTheatre.id,
       startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 18, 30),
       endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 5, 21, 0),
-      imageUrl: "https://images.unsplash.com/photo-1526676037777-05a232554f77?auto=format&fit=crop&w=1600&q=80",
       organizerId: organizer.id,
       status: EventStatus.PUBLISHED,
       publishedAt: new Date(),
@@ -168,6 +171,8 @@ async function main() {
     },
   });
 
+  imageLinks.push({ eventId: e4.id, url: "https://images.unsplash.com/photo-1526676037777-05a232554f77?auto=format&fit=crop&w=1600&q=80" });
+
   const e5 = await prisma.event.create({
     data: {
       title: "Забіг у парку: 5 км для всіх",
@@ -177,13 +182,14 @@ async function main() {
       categoryId: catSport.id,
       startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 8, 10, 0),
       endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 8, 12, 0),
-      imageUrl: "https://images.unsplash.com/photo-1530549387789-4c1017266634?auto=format&fit=crop&w=1600&q=80",
       organizerId: organizer.id,
       status: EventStatus.PUBLISHED,
       publishedAt: new Date(),
       ticketTypes: { create: [{ name: "Реєстрація", price: 0, quantityTotal: 500 }] },
     },
   });
+
+  imageLinks.push({ eventId: e5.id, url: "https://images.unsplash.com/photo-1530549387789-4c1017266634?auto=format&fit=crop&w=1600&q=80" });
 
   const e6 = await prisma.event.create({
     data: {
@@ -194,13 +200,14 @@ async function main() {
       categoryId: catKids.id,
       startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 9, 14, 0),
       endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 9, 15, 30),
-      imageUrl: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1600&q=80",
       organizerId: organizer.id,
       status: EventStatus.PUBLISHED,
       publishedAt: new Date(),
       ticketTypes: { create: [{ name: "Квиток", price: 12000, quantityTotal: 40 }] },
     },
   });
+
+  imageLinks.push({ eventId: e6.id, url: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=1600&q=80" });
 
   const e7 = await prisma.event.create({
     data: {
@@ -211,13 +218,14 @@ async function main() {
       categoryId: catConcerts.id,
       startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 12, 20, 0),
       endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 12, 22, 30),
-      imageUrl: "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1600&q=80",
       organizerId: organizer.id,
       status: EventStatus.PUBLISHED,
       publishedAt: new Date(),
       ticketTypes: { create: [{ name: "Вхід", price: 10000, quantityTotal: 300 }] },
     },
   });
+
+  imageLinks.push({ eventId: e7.id, url: "https://images.unsplash.com/photo-1517602302552-471fe67acf66?auto=format&fit=crop&w=1600&q=80" });
 
   const e8 = await prisma.event.create({
     data: {
@@ -228,13 +236,41 @@ async function main() {
       categoryId: catEdu.id,
       startAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 15, 16, 0),
       endAt: new Date(now.getFullYear(), now.getMonth(), now.getDate() + 15, 18, 30),
-      imageUrl: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1600&q=80",
       organizerId: organizer.id,
       status: EventStatus.PUBLISHED,
       publishedAt: new Date(),
       ticketTypes: { create: [{ name: "Місце", price: 18000, quantityTotal: 80 }] },
     },
   });
+
+  imageLinks.push({ eventId: e8.id, url: "https://images.unsplash.com/photo-1553877522-43269d4ea984?auto=format&fit=crop&w=1600&q=80" });
+
+  const maxBytes = 5 * 1024 * 1024;
+  const allowedMime = new Set(["image/jpeg", "image/png", "image/webp", "image/gif"]);
+
+  for (const it of imageLinks) {
+    try {
+      const res = await fetch(it.url);
+      if (!res.ok) continue;
+      const mime = (res.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+      if (!allowedMime.has(mime)) continue;
+      const len = res.headers.get("content-length");
+      if (len) {
+        const n = Number(len);
+        if (Number.isFinite(n) && n > maxBytes) continue;
+      }
+      const ab = await res.arrayBuffer();
+      if (ab.byteLength > maxBytes) continue;
+      const buf = Buffer.from(ab);
+      await prisma.eventImage.upsert({
+        where: { eventId: it.eventId },
+        create: { eventId: it.eventId, mime, data: buf },
+        update: { mime, data: buf },
+      });
+    } catch {
+      continue;
+    }
+  }
 
   await prisma.review.create({
     data: {
