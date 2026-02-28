@@ -40,8 +40,8 @@ export default async function HomePage({
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
         <h1 className="text-2xl font-semibold tracking-tight">Афіша подій • Житомир</h1>
-        <p className="text-slate-300 text-sm">
-          Сервіс афіші для міста: каталог подій, календар, квитки, відгуки, кабінет, панель організатора та адмінка.
+        <p className="text-slate-600 text-sm">
+          Каталог подій, календар на головній, квитки, відгуки, кабінет, панель організатора та адмінка.
         </p>
       </div>
 
@@ -51,9 +51,9 @@ export default async function HomePage({
             <input
               name="q"
               placeholder="Пошук подій..."
-              className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
             />
-            <button className="rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition">
+            <button className="rounded-2xl bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition">
               Знайти
             </button>
           </form>
@@ -61,13 +61,13 @@ export default async function HomePage({
           <div className="flex gap-2">
             <Link
               href="/events"
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 hover:bg-white/10 transition"
+              className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
             >
               Каталог
             </Link>
             <Link
               href="/#calendar"
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-slate-200 hover:bg-white/10 transition"
+              className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
             >
               Календар
             </Link>
@@ -81,9 +81,11 @@ export default async function HomePage({
           <div className="flex items-end justify-between gap-3">
             <div>
               <h2 className="text-xl font-semibold">Календар подій</h2>
-              <div className="text-sm text-slate-300 mt-1">Натисни на день, щоб перейти до каталогу з фільтром дати</div>
+              <div className="text-sm text-slate-600 mt-1">
+                Натисни на день, щоб перейти до каталогу з фільтром дати
+              </div>
             </div>
-            <div className="text-xs text-slate-400">Місто: Житомир</div>
+            <div className="text-xs text-slate-500">Місто: Житомир</div>
           </div>
           <div className="mt-4">
             <CalendarWidget year={calYear} month={calMonth} counts={counts} eventsPath="/events" />
@@ -94,11 +96,11 @@ export default async function HomePage({
       <div className="flex items-end justify-between gap-2">
         <div>
           <h2 className="text-xl font-semibold">Найближчі події</h2>
-          <div className="text-sm text-slate-300 mt-1">Добірка найближчих подій</div>
+          <div className="text-sm text-slate-600 mt-1">Добірка найближчих подій</div>
         </div>
         <Link
           href="/events"
-          className="rounded-xl bg-brand-orange px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition"
+          className="rounded-2xl bg-brand-orange px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
         >
           Перейти до каталогу
         </Link>
@@ -112,7 +114,7 @@ export default async function HomePage({
 
       <Card>
         <div className="p-5">
-          <div className="text-sm text-slate-300">
+          <div className="text-sm text-slate-600">
             Демо-акаунти: admin@demo.com / admin123, organizer@demo.com / organizer123, user@demo.com / user123
           </div>
         </div>

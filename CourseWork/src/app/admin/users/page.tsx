@@ -17,15 +17,15 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: a
       <div className="p-5 space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Користувачі та ролі</h2>
-          <div className="text-sm text-slate-300 mt-1">
+          <div className="text-sm text-slate-600 mt-1">
             Адміністратор може змінювати ролі користувачів: USER/ORGANIZER/ADMIN.
           </div>
-          {error && <div className="text-sm text-rose-200 mt-2">Некоректні дані</div>}
+          {error && <div className="text-sm text-rose-600 mt-2">Некоректні дані</div>}
         </div>
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
-            <thead className="text-left text-slate-400">
+            <thead className="text-left text-slate-600">
               <tr>
                 <th className="py-2 pr-4">Email</th>
                 <th className="py-2 pr-4">Імʼя</th>
@@ -36,7 +36,7 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: a
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id} className="border-t border-white/10">
+                <tr key={u.id} className="border-t border-slate-200">
                   <td className="py-2 pr-4 whitespace-nowrap">{u.email}</td>
                   <td className="py-2 pr-4">{u.name || "—"}</td>
                   <td className="py-2 pr-4"><Badge>{u.role}</Badge></td>
@@ -46,13 +46,13 @@ export default async function AdminUsersPage({ searchParams }: { searchParams: a
                       <select
                         name="role"
                         defaultValue={u.role}
-                        className="rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                        className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
                       >
                         <option value="USER">USER</option>
                         <option value="ORGANIZER">ORGANIZER</option>
                         <option value="ADMIN">ADMIN</option>
                       </select>
-                      <button className="rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold hover:bg-white/15 transition">
+                      <button className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold hover:bg-slate-50 transition">
                         Зберегти
                       </button>
                     </form>

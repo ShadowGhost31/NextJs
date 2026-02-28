@@ -1,35 +1,55 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, fireEvent } from "@testing-library/react";
 import CalendarWidget from "./CalendarWidget";
-import { __testRouter, __testSearchParams } from "../../vitest.setup";
+
+const push = vi.fn();
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 
 describe("CalendarWidget", () => {
-  it("navigates to events list when day clicked", () => {
-    __testRouter.push.mockClear();
-    __testSearchParams.forEach((_, k) => __testSearchParams.delete(k));
-
-    render(<CalendarWidget year={2026} month={1} counts={{ "2026-02-10": 2 }} eventsPath="/events" />);
-
-    const day = screen.getAllByRole("button").find((b) => b.textContent?.trim().startsWith("10"));
-    expect(day).toBeTruthy();
-    fireEvent.click(day!);
-
-    expect(__testRouter.push).toHaveBeenCalled();
-    const arg = __testRouter.push.mock.calls[0][0] as string;
-    expect(arg).toContain("/events?");
-    expect(arg).toContain("dateFrom=2026-02-10");
-    expect(arg).toContain("dateTo=2026-02-10");
+  beforeEach(() => {
+    push.mockReset();
   });
 
-  it("changes month via arrows", () => {
-    __testRouter.push.mockClear();
-    __testSearchParams.forEach((_, k) => __testSearchParams.delete(k));
+  it("renders month and navigates on day click", () => {
+    render(
+      <CalendarWidget
+        year={2026}
+        month={0}
+        counts={{ "2026-01-10": 2 }}
+        eventsPath="/events"
+      />
+    );
 
-    render(<CalendarWidget year={2026} month={1} counts={{}} />);
+    const dayBtn = screen
+      .getAllByRole("button")
+      .find((b) => (b.textContent || "").trim().startsWith("10"));
+
+    expect(dayBtn).toBeTruthy();
+
+    if (dayBtn) {
+      fireEvent.click(dayBtn);
+      expect(push).toHaveBeenCalledWith("/events?dateFrom=2026-01-10&dateTo=2026-01-10");
+    }
+
     fireEvent.click(screen.getByRole("button", { name: "→" }));
+    expect(push).toHaveBeenCalledWith("/?cal=2026-02#calendar");
+  });
 
-    expect(__testRouter.push).toHaveBeenCalled();
-    const href = __testRouter.push.mock.calls[0][0] as string;
-    expect(href).toContain("cal=2026-03");
+  it("renders disabled buttons for days outside the current month", () => {
+    render(
+      <CalendarWidget
+        year={2026}
+        month={3}
+        counts={{}}
+        eventsPath="/events"
+      />
+    );
+
+    const dayButtons = screen
+      .getAllByRole("button")
+      .filter((b) => /^\d+$/.test((b.textContent || "").trim()));
+
+    expect(dayButtons.length).toBeGreaterThan(20);
+    expect(dayButtons.some((b) => b.hasAttribute("disabled"))).toBe(true);
   });
 });

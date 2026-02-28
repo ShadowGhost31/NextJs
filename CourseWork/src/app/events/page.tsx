@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import Card from "@/components/Card";
 import EventCard from "@/components/EventCard";
 import { getCurrentUserFromCookie } from "@/lib/auth";
@@ -34,7 +35,8 @@ export default async function EventsCatalogPage({
   const priceMaxCents = eventService.parseOptionalPrice(qParsed.priceMax);
 
   const free = qParsed.free === "on" || qParsed.free === "1" || qParsed.free === "true";
-  const withTickets = qParsed.withTickets === "on" || qParsed.withTickets === "1" || qParsed.withTickets === "true";
+  const withTickets =
+    qParsed.withTickets === "on" || qParsed.withTickets === "1" || qParsed.withTickets === "true";
 
   const { categories, venues } = await metaService.listCatalogMeta();
 
@@ -56,19 +58,88 @@ export default async function EventsCatalogPage({
 
   const pages = Math.max(1, Math.ceil(total / pageSize));
 
+  function buildHref(overrides: Partial<Record<keyof typeof qParsed, string>>) {
+    const params = new URLSearchParams();
+
+    for (const [k, v] of Object.entries(qParsed)) {
+      if (!v) continue;
+      if (k === "page") continue;
+      params.set(k, String(v));
+    }
+
+    for (const [k, v] of Object.entries(overrides)) {
+      if (v === "") params.delete(k);
+      else if (v != null) params.set(k, String(v));
+    }
+
+    params.set("page", "1");
+    const qs = params.toString();
+    return qs ? `/events?${qs}#list` : "/events#list";
+  }
+
+  function Chip({
+    href,
+    active,
+    children,
+  }: {
+    href: string;
+    active: boolean;
+    children: ReactNode;
+  }) {
+    return (
+      <Link
+        href={href}
+        className={`whitespace-nowrap rounded-full border px-3 py-1.5 text-sm transition ${
+          active
+            ? "border-brand-blue bg-brand-blue/10 text-brand-deep"
+            : "border-slate-200 bg-white text-slate-800 hover:bg-slate-50"
+        }`}
+      >
+        {children}
+      </Link>
+    );
+  }
+
   return (
     <div className="space-y-6">
       <div className="flex items-end justify-between gap-3">
         <div>
-          <h1 className="text-2xl font-semibold tracking-tight">Каталог подій • Житомир</h1>
-          <p className="text-sm text-slate-300 mt-1">Пошук, фільтри та сортування</p>
+          <h1 className="text-2xl font-semibold tracking-tight">Події в Житомирі</h1>
+          <p className="text-sm text-slate-600 mt-1">Пошук, фільтри та сортування • як на афішах типу Karabas</p>
         </div>
         <Link
           href="/#calendar"
-          className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 hover:bg-white/10 transition"
+          className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
         >
           Календар
         </Link>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          <Chip href={buildHref({ category: "" })} active={!qParsed.category}>
+            Усі категорії
+          </Chip>
+          {categories.slice(0, 12).map((c) => (
+            <Chip key={c.id} href={buildHref({ category: c.id })} active={qParsed.category === c.id}>
+              <span className="inline-flex items-center gap-2">
+                <span className={`h-4 w-4 rounded border ${qParsed.category === c.id ? "border-brand-blue bg-brand-blue" : "border-slate-300"}`} />
+                {c.title}
+              </span>
+            </Chip>
+          ))}
+        </div>
+
+        <div className="flex items-center gap-2 overflow-x-auto pb-1">
+          <Chip href={buildHref({ venue: "" })} active={!qParsed.venue}>
+            Усі місця
+          </Chip>
+          {venues.slice(0, 10).map((v) => (
+            <Chip key={v.id} href={buildHref({ venue: v.id })} active={qParsed.venue === v.id}>
+              {v.title}
+            </Chip>
+          ))}
+        </div>
       </div>
 
       <Card>
@@ -78,39 +149,13 @@ export default async function EventsCatalogPage({
               name="q"
               defaultValue={qParsed.q}
               placeholder="Пошук (назва/опис/локація)"
-              className="md:col-span-2 w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+              className="md:col-span-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
             />
-
-            <select
-              name="category"
-              defaultValue={qParsed.category}
-              className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
-            >
-              <option value="">Категорія (усі)</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.title}
-                </option>
-              ))}
-            </select>
-
-            <select
-              name="venue"
-              defaultValue={qParsed.venue}
-              className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
-            >
-              <option value="">Місце (усі)</option>
-              {venues.map((v) => (
-                <option key={v.id} value={v.id}>
-                  {v.title}
-                </option>
-              ))}
-            </select>
 
             <select
               name="sort"
               defaultValue={qParsed.sort}
-              className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
             >
               <option value="soon">Найближчі</option>
               <option value="new">Нові</option>
@@ -124,13 +169,13 @@ export default async function EventsCatalogPage({
                 type="date"
                 name="dateFrom"
                 defaultValue={qParsed.dateFrom}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
               />
               <input
                 type="date"
                 name="dateTo"
                 defaultValue={qParsed.dateTo}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
               />
             </div>
 
@@ -139,35 +184,68 @@ export default async function EventsCatalogPage({
                 name="priceMin"
                 defaultValue={qParsed.priceMin}
                 placeholder="Ціна від (грн)"
-                className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
               />
               <input
                 name="priceMax"
                 defaultValue={qParsed.priceMax}
                 placeholder="Ціна до (грн)"
-                className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
               />
             </div>
 
-            <label className="flex items-center gap-2 text-sm text-slate-200">
-              <input type="checkbox" name="free" defaultChecked={free} className="h-4 w-4" />
-              Безкоштовно
-            </label>
+            <div className="flex flex-wrap items-center gap-4 md:col-span-3">
+              <label className="flex items-center gap-2 text-sm text-slate-800">
+                <input type="checkbox" name="free" defaultChecked={free} className="h-4 w-4 accent-brand-blue" />
+                Безкоштовно
+              </label>
 
-            <label className="flex items-center gap-2 text-sm text-slate-200">
-              <input type="checkbox" name="withTickets" defaultChecked={withTickets} className="h-4 w-4" />
-              Є квитки
-            </label>
+              <label className="flex items-center gap-2 text-sm text-slate-800">
+                <input
+                  type="checkbox"
+                  name="withTickets"
+                  defaultChecked={withTickets}
+                  className="h-4 w-4 accent-brand-blue"
+                />
+                Є квитки
+              </label>
+
+              <select
+                name="category"
+                defaultValue={qParsed.category}
+                className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
+              >
+                <option value="">Категорія (усі)</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.title}
+                  </option>
+                ))}
+              </select>
+
+              <select
+                name="venue"
+                defaultValue={qParsed.venue}
+                className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
+              >
+                <option value="">Місце (усі)</option>
+                {venues.map((v) => (
+                  <option key={v.id} value={v.id}>
+                    {v.title}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             <input type="hidden" name="page" value="1" />
 
-            <div className="flex gap-2 md:col-span-2">
-              <button className="flex-1 rounded-xl bg-brand-blue px-3 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition">
+            <div className="flex gap-2 md:col-span-3 md:justify-end">
+              <button className="rounded-2xl bg-brand-blue px-5 py-2 text-sm font-semibold text-white hover:opacity-90 transition">
                 Застосувати
               </button>
               <Link
                 href="/events"
-                className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 hover:bg-white/10 transition"
+                className="rounded-2xl border border-slate-300 bg-white px-5 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
               >
                 Скинути
               </Link>
@@ -180,9 +258,9 @@ export default async function EventsCatalogPage({
       <div className="flex items-end justify-between gap-2">
         <div>
           <h2 className="text-xl font-semibold">Події</h2>
-          <div className="text-sm text-slate-300 mt-1">Знайдено: {total}</div>
+          <div className="text-sm text-slate-600 mt-1">Знайдено: {total}</div>
         </div>
-        <div className="text-xs text-slate-400">Сторінка {page} з {pages}</div>
+        <div className="text-xs text-slate-500">Сторінка {page} з {pages}</div>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2">
@@ -192,7 +270,7 @@ export default async function EventsCatalogPage({
       </div>
 
       {events.length === 0 && (
-        <div className="text-slate-300">Нічого не знайдено. Спробуй інші фільтри.</div>
+        <div className="text-slate-600">Нічого не знайдено. Спробуй інші фільтри.</div>
       )}
 
       {pages > 1 && (
@@ -213,10 +291,10 @@ export default async function EventsCatalogPage({
               <Link
                 key={p}
                 href={href}
-                className={`rounded-xl border px-3 py-2 text-sm transition ${
+                className={`rounded-2xl border px-4 py-2 text-sm transition ${
                   active
-                    ? "border-brand-blue bg-brand-blue text-slate-950"
-                    : "border-white/10 bg-white/5 hover:bg-white/10"
+                    ? "border-brand-blue bg-brand-blue text-white"
+                    : "border-slate-300 bg-white text-slate-800 hover:bg-slate-50"
                 }`}
               >
                 {p}

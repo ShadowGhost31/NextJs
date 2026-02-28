@@ -39,7 +39,7 @@ export default async function AdminEventsPage() {
       <div className="p-5 space-y-4">
         <div>
           <h2 className="text-xl font-semibold">Події та контроль контенту</h2>
-          <div className="text-sm text-slate-300 mt-1">
+          <div className="text-sm text-slate-600 mt-1">
             Адміністратор може змінювати статус подій та керувати видимістю у каталозі.
           </div>
         </div>
@@ -48,7 +48,7 @@ export default async function AdminEventsPage() {
           {events.map((e) => {
             const sold = e.ticketTypes.reduce((s, t) => s + t.quantitySold, 0);
             return (
-              <div key={e.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+              <div key={e.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div className="space-y-2">
                     <div className="flex flex-wrap items-center gap-2">
@@ -65,14 +65,14 @@ export default async function AdminEventsPage() {
                       <Badge>{e.category.title}</Badge>
                     </div>
 
-                    <div className="text-sm text-slate-300">
+                    <div className="text-sm text-slate-600">
                       Організатор: {e.organizer.name || "—"} • {e.organizer.email}
                     </div>
                   </div>
 
                   <div className="shrink-0 flex flex-wrap gap-2">
                     <form action={setEventStatusAdminAction.bind(null, e.id, EventStatus.DRAFT)}>
-                      <button className="rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/15 transition">
+                      <button className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50 transition">
                         У чернетки
                       </button>
                     </form>
@@ -93,7 +93,7 @@ export default async function AdminEventsPage() {
           })}
         </div>
 
-        {events.length === 0 && <div className="text-slate-300">Подій поки немає.</div>}
+        {events.length === 0 && <div className="text-slate-600">Подій поки немає.</div>}
       </div>
     </Card>
   );

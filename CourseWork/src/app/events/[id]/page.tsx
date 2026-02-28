@@ -19,10 +19,10 @@ export default async function EventPage({ params }: { params: { id: string } }) 
     return (
       <Card>
         <div className="p-5">
-          <div className="text-slate-200">Подію не знайдено або вона недоступна.</div>
+          <div className="text-slate-700">Подію не знайдено або вона недоступна.</div>
           <Link
             href="/events"
-            className="inline-block mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+            className="inline-block mt-4 rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
           >
             До каталогу
           </Link>
@@ -41,11 +41,16 @@ export default async function EventPage({ params }: { params: { id: string } }) 
     ? await reviewService.getReviewEligibility({ eventId: event.id, userId: me.sub })
     : { canReview: false, reason: "Увійдіть, щоб залишити відгук" };
 
+  const addressParts = [event.venue.address, (event.venue as any).city].filter(Boolean);
+  const mapHref = addressParts.length
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressParts.join(", "))}`
+    : null;
+
   return (
     <div className="space-y-5">
       <Card>
         <div className="grid gap-4 p-5 md:grid-cols-[280px_1fr]">
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
             {event.imageUrl ? (
               <Image
                 src={event.imageUrl}
@@ -55,7 +60,9 @@ export default async function EventPage({ params }: { params: { id: string } }) 
                 className="h-[220px] w-full object-cover md:h-full"
               />
             ) : (
-              <div className="flex h-[220px] items-center justify-center text-slate-400 md:h-full">Немає зображення</div>
+              <div className="flex h-[220px] items-center justify-center text-slate-500 md:h-full">
+                Немає зображення
+              </div>
             )}
           </div>
 
@@ -67,7 +74,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
               ) : (
                 <Link
                   href={loginHref}
-                  className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition"
+                  className="rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
                 >
                   ☆ В обране
                 </Link>
@@ -82,21 +89,23 @@ export default async function EventPage({ params }: { params: { id: string } }) 
               {minPrice != null ? <Badge>від {(minPrice / 100).toFixed(2)} грн</Badge> : <Badge>квитків немає</Badge>}
             </div>
 
-            <div className="text-sm text-slate-300">Адреса: {event.venue.address}</div>
+            {event.venue.address && (
+              <div className="text-sm text-slate-700">Адреса: {event.venue.address}</div>
+            )}
 
-            {event.venue.mapUrl && (
+            {mapHref && (
               <div>
                 <Link
-                  href={event.venue.mapUrl}
+                  href={mapHref}
                   target="_blank"
-                  className="inline-block rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+                  className="inline-block rounded-2xl bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
                 >
                   Відкрити на мапі
                 </Link>
               </div>
             )}
 
-            <div className="text-sm text-slate-300">
+            <div className="text-sm text-slate-700">
               Організатор:{" "}
               {event.organizer ? (
                 <Link href={"/organizers/" + event.organizer.id} className="hover:text-brand-blue transition">
@@ -107,7 +116,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
               )}
             </div>
 
-            <div className="text-slate-100/95 whitespace-pre-wrap">{event.description}</div>
+            <div className="text-slate-800 whitespace-pre-wrap">{event.description}</div>
           </div>
         </div>
       </Card>
@@ -116,7 +125,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
         <Card>
           <div className="p-5">
             <h2 className="text-lg font-semibold">Квитки</h2>
-            <p className="text-sm text-slate-300 mt-1">
+            <p className="text-sm text-slate-600 mt-1">
               Після оформлення замовлення його можна оплатити або скасувати в особистому кабінеті.
             </p>
             <BuyTicketForm ticketTypes={event.ticketTypes as any} isAuthed={!!me} loginHref={loginHref} />
@@ -124,7 +133,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
               <div className="mt-3">
                 <Link
                   href="/account/orders"
-                  className="inline-block rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+                  className="inline-block rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
                 >
                   Мої замовлення
                 </Link>
@@ -136,7 +145,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
         <Card>
           <div className="p-5">
             <h2 className="text-lg font-semibold">Залишити відгук</h2>
-            <p className="text-sm text-slate-300 mt-1">Відгук зʼявиться після модерації адміністратором.</p>
+            <p className="text-sm text-slate-600 mt-1">Відгук зʼявиться після модерації адміністратором.</p>
             <ReviewForm
               eventId={event.id}
               isAuthed={!!me}
@@ -152,13 +161,13 @@ export default async function EventPage({ params }: { params: { id: string } }) 
         <div className="p-5">
           <h2 className="text-lg font-semibold">Відгуки</h2>
           <div className="mt-3 space-y-3">
-            {event.reviews.length === 0 && <div className="text-slate-300">Поки немає відгуків.</div>}
+            {event.reviews.length === 0 && <div className="text-slate-600">Поки немає відгуків.</div>}
             {event.reviews.map((r) => (
-              <div key={r.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
-                <div className="text-sm text-slate-300">
+              <div key={r.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                <div className="text-sm text-slate-600">
                   {r.user?.name || "Користувач"} • Оцінка: {r.rating} • {formatDateTime(new Date(r.createdAt))}
                 </div>
-                <div className="mt-2">{r.text}</div>
+                <div className="mt-2 text-slate-800">{r.text}</div>
               </div>
             ))}
           </div>
@@ -168,7 +177,7 @@ export default async function EventPage({ params }: { params: { id: string } }) 
       <div>
         <Link
           href="/events"
-          className="inline-block rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+          className="inline-block rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm text-slate-800 hover:bg-slate-50 transition"
         >
           ← До каталогу
         </Link>

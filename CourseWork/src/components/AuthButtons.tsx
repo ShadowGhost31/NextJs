@@ -21,7 +21,7 @@ export default function AuthButtons({ isAuthed }: { isAuthed: boolean }) {
     <button
       onClick={logout}
       disabled={loading}
-      className="rounded-lg bg-white/10 px-3 py-1.5 text-sm hover:bg-white/15 transition disabled:opacity-50"
+      className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 hover:bg-slate-50 transition disabled:opacity-50"
     >
       Вийти
     </button>

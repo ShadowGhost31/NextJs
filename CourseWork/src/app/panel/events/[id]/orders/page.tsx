@@ -15,8 +15,8 @@ export default async function EventOrdersPage({ params }: { params: { id: string
     return (
       <Card>
         <div className="p-5">
-          <div className="text-slate-200">Подію не знайдено або недостатньо прав.</div>
-          <Link href="/panel/events" className="inline-block mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
+          <div className="text-slate-700">Подію не знайдено або недостатньо прав.</div>
+          <Link href="/panel/events" className="inline-block mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition">
             До списку подій
           </Link>
         </div>
@@ -43,10 +43,10 @@ export default async function EventOrdersPage({ params }: { params: { id: string
             </div>
           </div>
           <div className="flex gap-2">
-            <Link href={`/panel/events/${event.id}/tickets`} className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
+            <Link href={`/panel/events/${event.id}/tickets`} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition">
               Квитки
             </Link>
-            <Link href={`/panel/orders?eventId=${encodeURIComponent(event.id)}`} className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
+            <Link href={`/panel/orders?eventId=${encodeURIComponent(event.id)}`} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition">
               Усі замовлення
             </Link>
           </div>
@@ -58,7 +58,7 @@ export default async function EventOrdersPage({ params }: { params: { id: string
           <h3 className="text-lg font-semibold">Список</h3>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-left text-slate-400">
+              <thead className="text-left text-slate-500">
                 <tr>
                   <th className="py-2 pr-4">Дата</th>
                   <th className="py-2 pr-4">Покупець</th>
@@ -70,11 +70,11 @@ export default async function EventOrdersPage({ params }: { params: { id: string
               </thead>
               <tbody>
                 {items.map((it: any) => (
-                  <tr key={it.id} className="border-t border-white/10">
+                  <tr key={it.id} className="border-t border-slate-200">
                     <td className="py-2 pr-4 whitespace-nowrap">{formatDateTime(new Date(it.order.createdAt))}</td>
                     <td className="py-2 pr-4">
                       {(it.order.user.name || "Користувач")}
-                      <div className="text-xs text-slate-400">{it.order.user.email}</div>
+                      <div className="text-xs text-slate-500">{it.order.user.email}</div>
                     </td>
                     <td className="py-2 pr-4">{it.ticketType.name}</td>
                     <td className="py-2 pr-4">{it.quantity}</td>
@@ -84,7 +84,7 @@ export default async function EventOrdersPage({ params }: { params: { id: string
                 ))}
               </tbody>
             </table>
-            {items.length === 0 && <div className="text-slate-300">Замовлень ще немає.</div>}
+            {items.length === 0 && <div className="text-slate-600">Замовлень ще немає.</div>}
           </div>
         </div>
       </Card>

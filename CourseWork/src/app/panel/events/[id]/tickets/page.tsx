@@ -15,8 +15,8 @@ export default async function TicketsPage({ params, searchParams }: { params: { 
     return (
       <Card>
         <div className="p-5">
-          <div className="text-slate-200">Подію не знайдено або недостатньо прав.</div>
-          <Link href="/panel/events" className="inline-block mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
+          <div className="text-slate-700">Подію не знайдено або недостатньо прав.</div>
+          <Link href="/panel/events" className="inline-block mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition">
             До списку подій
           </Link>
         </div>
@@ -36,13 +36,13 @@ export default async function TicketsPage({ params, searchParams }: { params: { 
               <Badge>{event.venue.title}</Badge>
               <Badge>{event.category.title}</Badge>
             </div>
-            {error && <div className="text-sm text-rose-200">{decodeURIComponent(error)}</div>}
+            {error && <div className="text-sm text-rose-600">{decodeURIComponent(error)}</div>}
           </div>
           <div className="flex gap-2">
-            <Link href={`/panel/events/${event.id}/edit`} className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
+            <Link href={`/panel/events/${event.id}/edit`} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition">
               Редагувати подію
             </Link>
-            <Link href={`/events/${event.id}`} className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
+            <Link href={`/events/${event.id}`} className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition">
               Публічна сторінка
             </Link>
           </div>
@@ -57,24 +57,24 @@ export default async function TicketsPage({ params, searchParams }: { params: { 
               <input
                 name="name"
                 placeholder="Назва (Стандарт, VIP...)"
-                className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
               />
               <div className="grid grid-cols-2 gap-2">
                 <input
                   name="priceUah"
                   placeholder="Ціна (грн)"
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
                 />
                 <input
                   name="quantityTotal"
                   placeholder="Кількість"
-                  className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                  className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
                 />
               </div>
-              <button className="w-full rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition">
+              <button className="w-full rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition">
                 Додати
               </button>
-              <div className="text-xs text-slate-400">
+              <div className="text-xs text-slate-500">
                 Ціна вводиться у гривнях, зберігається у копійках.
               </div>
             </form>
@@ -85,15 +85,15 @@ export default async function TicketsPage({ params, searchParams }: { params: { 
           <div className="p-5">
             <h3 className="text-lg font-semibold">Поточні квитки</h3>
             <div className="mt-3 space-y-3">
-              {event.ticketTypes.length === 0 && <div className="text-slate-300">Типів квитків поки немає.</div>}
+              {event.ticketTypes.length === 0 && <div className="text-slate-600">Типів квитків поки немає.</div>}
               {event.ticketTypes.map((t) => {
                 const available = t.quantityTotal - t.quantitySold;
                 return (
-                  <div key={t.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                  <div key={t.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                     <div className="flex items-start justify-between gap-3">
                       <div>
                         <div className="font-semibold">{t.name}</div>
-                        <div className="text-sm text-slate-300 mt-1">
+                        <div className="text-sm text-slate-600 mt-1">
                           {formatUahFromCents(t.price)} грн • продано {t.quantitySold} • доступно {available}
                         </div>
                       </div>
@@ -107,29 +107,29 @@ export default async function TicketsPage({ params, searchParams }: { params: { 
                       <input
                         name="name"
                         defaultValue={t.name}
-                        className="md:col-span-2 w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                        className="md:col-span-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
                       />
                       <input
                         name="priceUah"
                         defaultValue={formatUahFromCents(t.price)}
-                        className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
                       />
                       <input
                         name="quantityTotal"
                         defaultValue={String(t.quantityTotal)}
-                        className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                        className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
                       />
 
-                      <label className="md:col-span-2 flex items-center gap-2 text-sm text-slate-200">
+                      <label className="md:col-span-2 flex items-center gap-2 text-sm text-slate-700">
                         <input type="checkbox" name="isActive" defaultChecked={t.isActive} className="h-4 w-4" />
                         Активний
                       </label>
 
-                      <button className="md:col-span-2 w-full rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/15 transition">
+                      <button className="md:col-span-2 w-full rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50 transition">
                         Зберегти
                       </button>
 
-                      <div className="md:col-span-4 text-xs text-slate-400">
+                      <div className="md:col-span-4 text-xs text-slate-500">
                         Кількість не може бути меншою, ніж уже продано.
                       </div>
                     </form>

@@ -28,7 +28,10 @@ export default function BuyTicketForm({
   const [msg, setMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const selected = useMemo(() => active.find((t) => t.id === ticketTypeId) || null, [active, ticketTypeId]);
+  const selected = useMemo(
+    () => active.find((t) => t.id === ticketTypeId) || null,
+    [active, ticketTypeId]
+  );
 
   async function submit() {
     setMsg(null);
@@ -52,24 +55,24 @@ export default function BuyTicketForm({
   return (
     <div className="mt-4 space-y-3">
       {!isAuthed ? (
-        <div className="rounded-xl border border-white/10 bg-white/5 p-4 text-sm text-slate-200">
+        <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
           Щоб оформити замовлення, потрібно увійти.
           <div className="mt-3">
             <Link
               href={loginHref}
-              className="inline-block rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition"
+              className="inline-block rounded-2xl bg-brand-orange px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
             >
               Увійти
             </Link>
           </div>
         </div>
       ) : active.length === 0 ? (
-        <div className="text-slate-300">Квитків поки що немає.</div>
+        <div className="text-slate-600">Квитків поки що немає.</div>
       ) : (
         <>
-          <label className="text-xs text-slate-400">Тип квитка</label>
+          <label className="text-xs text-slate-600">Тип квитка</label>
           <select
-            className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+            className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
             value={ticketTypeId}
             onChange={(e) => setTicketTypeId(e.target.value)}
           >
@@ -85,20 +88,20 @@ export default function BuyTicketForm({
 
           <div className="grid gap-2 md:grid-cols-2">
             <div>
-              <label className="text-xs text-slate-400">Кількість (1–10)</label>
+              <label className="text-xs text-slate-600">Кількість (1–10)</label>
               <input
                 type="number"
                 min={1}
                 max={10}
-                className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-2 text-sm outline-none focus:border-brand-blue"
                 value={quantity}
                 onChange={(e) => setQuantity(Number(e.target.value))}
               />
             </div>
 
             <div className="flex items-end">
-              <div className="text-sm text-slate-300">
-                Доступно: <span className="font-semibold text-white">{available}</span>
+              <div className="text-sm text-slate-700">
+                Доступно: <span className="font-semibold text-slate-900">{available}</span>
               </div>
             </div>
           </div>
@@ -106,14 +109,14 @@ export default function BuyTicketForm({
           <button
             onClick={submit}
             disabled={loading || !ticketTypeId}
-            className="w-full rounded-xl bg-brand-orange px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition disabled:opacity-50"
+            className="w-full rounded-2xl bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition disabled:opacity-50"
           >
             {loading ? "Оформлення..." : "Оформити замовлення"}
           </button>
         </>
       )}
 
-      {msg && <div className="text-sm text-slate-200">{msg}</div>}
+      {msg && <div className="text-sm text-slate-700">{msg}</div>}
     </div>
   );
 }

@@ -31,13 +31,13 @@ export default async function PanelEventsPage() {
       <div className="flex items-end justify-between gap-2">
         <div>
           <h2 className="text-xl font-semibold">Події</h2>
-          <div className="text-sm text-slate-300 mt-1">
+          <div className="text-sm text-slate-600 mt-1">
             {me.role === "ADMIN" ? "Адміністратор бачить власні події як організатор" : "Список ваших подій"}
           </div>
         </div>
         <Link
           href="/panel/events/new"
-          className="rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition"
+          className="rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition"
         >
           Створити подію
         </Link>
@@ -46,7 +46,7 @@ export default async function PanelEventsPage() {
       <Card>
         <div className="p-5 space-y-4">
           {visible.length === 0 && (
-            <div className="text-slate-300">Подій ще немає. Створи першу подію.</div>
+            <div className="text-slate-600">Подій ще немає. Створи першу подію.</div>
           )}
 
           <div className="grid gap-4">
@@ -55,7 +55,7 @@ export default async function PanelEventsPage() {
               const available = e.ticketTypes.reduce((s: number, t: any) => s + (t.quantityTotal - t.quantitySold), 0);
               const minPrice = e.ticketTypes.length ? Math.min(...e.ticketTypes.map((t: any) => t.price)) : null;
               return (
-                <div key={e.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+                <div key={e.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
                   <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                     <div className="space-y-2">
                       <div className="flex flex-wrap items-center gap-2">
@@ -72,27 +72,27 @@ export default async function PanelEventsPage() {
                         <Badge>продано {sold}</Badge>
                         <Badge>доступно {available}</Badge>
                       </div>
-                      <div className="text-sm text-slate-300 line-clamp-2">{e.description}</div>
+                      <div className="text-sm text-slate-600 line-clamp-2">{e.description}</div>
                     </div>
 
                     <div className="shrink-0 flex flex-col gap-2">
                       <Link
                         href={`/events/${e.id}`}
-                        className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition text-center"
+                        className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm hover:bg-white transition text-center"
                       >
                         Відкрити сторінку
                       </Link>
 
                       <Link
                         href={`/panel/events/${e.id}/tickets`}
-                        className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition text-center"
+                        className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm hover:bg-white transition text-center"
                       >
                         Квитки
                       </Link>
 
                       <Link
                         href={`/panel/events/${e.id}/orders`}
-                        className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition text-center"
+                        className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm hover:bg-white transition text-center"
                       >
                         Замовлення
                       </Link>
@@ -100,13 +100,13 @@ export default async function PanelEventsPage() {
                       <div className="grid grid-cols-2 gap-2">
                         {e.status !== "PUBLISHED" ? (
                           <form action={setEventStatusAction.bind(null, e.id, EventStatus.PUBLISHED)}>
-                            <button className="w-full rounded-xl bg-brand-green px-3 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition">
+                            <button className="w-full rounded-xl bg-brand-green px-3 py-2 text-sm font-semibold text-white hover:opacity-90 transition">
                               Publish
                             </button>
                           </form>
                         ) : (
                           <form action={setEventStatusAction.bind(null, e.id, EventStatus.DRAFT)}>
-                            <button className="w-full rounded-xl border border-white/10 bg-white/10 px-3 py-2 text-sm font-semibold hover:bg-white/15 transition">
+                            <button className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold hover:bg-slate-50 transition">
                               Draft
                             </button>
                           </form>

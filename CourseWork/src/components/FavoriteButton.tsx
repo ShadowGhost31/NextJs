@@ -20,15 +20,19 @@ export default function FavoriteButton({
     const prev = isFav;
     setIsFav(!prev);
 
-    const res = await fetch("/api/favorites", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ eventId }),
-    });
+    try {
+      const res = await fetch("/api/favorites", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ eventId }),
+      });
 
-    if (!res.ok) setIsFav(prev);
-
-    setLoading(false);
+      if (!res.ok) setIsFav(prev);
+    } catch {
+      setIsFav(prev);
+    } finally {
+      setLoading(false);
+    }
   }
 
   const cls =
@@ -41,7 +45,7 @@ export default function FavoriteButton({
       type="button"
       onClick={toggle}
       disabled={loading}
-      className={`${cls} border border-white/10 bg-white/5 hover:bg-white/10 transition disabled:opacity-60`}
+      className={`${cls} border border-slate-300 bg-white hover:bg-slate-50 transition disabled:opacity-60`}
       title={isFav ? "Забрати з обраного" : "Додати в обране"}
     >
       {isFav ? "★ В обраному" : "☆ В обране"}

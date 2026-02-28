@@ -75,21 +75,21 @@ export default function CalendarWidget({
           <button
             type="button"
             onClick={() => shiftMonth(-1)}
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm hover:bg-slate-50 transition"
           >
             ←
           </button>
           <button
             type="button"
             onClick={() => shiftMonth(1)}
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition"
+            className="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm hover:bg-slate-50 transition"
           >
             →
           </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-2 text-xs text-slate-400">
+      <div className="grid grid-cols-7 gap-2 text-xs text-slate-500">
         {["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"].map((x) => (
           <div key={x} className="text-center">
             {x}
@@ -109,25 +109,25 @@ export default function CalendarWidget({
               key={k}
               onClick={() => setDayFilter(d)}
               disabled={!inMonth}
-              className={`rounded-2xl border border-white/10 px-2 py-2 text-left transition ${
-                inMonth ? "bg-white/5 hover:bg-white/10" : "bg-white/0 opacity-40"
+              className={`rounded-2xl border border-slate-200 px-2 py-2 text-left transition ${
+                inMonth ? "bg-white hover:bg-slate-50" : "bg-white opacity-40"
               }`}
             >
               <div className="flex items-start justify-between">
                 <div className="text-sm font-semibold">{d.getDate()}</div>
                 {c > 0 && (
-                  <span className="rounded-full bg-brand-blue/90 px-2 py-0.5 text-[11px] font-semibold text-slate-950">
+                  <span className="rounded-full bg-brand-blue/90 px-2 py-0.5 text-[11px] font-semibold text-white">
                     {c}
                   </span>
                 )}
               </div>
-              <div className="mt-1 h-1 rounded-full bg-brand-orange/30" style={{ opacity: c > 0 ? 1 : 0 }} />
+              <div className="mt-1 h-1 rounded-full bg-brand-orange/20" style={{ opacity: c > 0 ? 1 : 0 }} />
             </button>
           );
         })}
       </div>
 
-      <div className="text-xs text-slate-400">Натисни на день, щоб показати події на цю дату.</div>
+      <div className="text-xs text-slate-500">Натисни на день, щоб показати події на цю дату.</div>
     </div>
   );
 }

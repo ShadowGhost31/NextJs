@@ -30,13 +30,13 @@ export default async function EventForm({
         <div className="flex items-end justify-between gap-3">
           <div>
             <h2 className="text-xl font-semibold">{title}</h2>
-            <div className="text-sm text-slate-300 mt-1">
+            <div className="text-sm text-slate-600 mt-1">
               Поля відповідають вимогам курсового проєкту: опис, дата/час, локація, категорія.
             </div>
           </div>
           <Link
             href="/panel/events"
-            className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+            className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition"
           >
             До списку
           </Link>
@@ -47,7 +47,7 @@ export default async function EventForm({
             name="title"
             defaultValue={initial?.title || ""}
             placeholder="Назва події"
-            className="md:col-span-2 w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+            className="md:col-span-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
           />
 
           <textarea
@@ -55,13 +55,13 @@ export default async function EventForm({
             defaultValue={initial?.description || ""}
             placeholder="Опис"
             rows={6}
-            className="md:col-span-2 w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+            className="md:col-span-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
           />
 
           <select
             name="categoryId"
             defaultValue={initial?.categoryId || ""}
-            className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
           >
             <option value="">Категорія</option>
             {categories.map((c) => (
@@ -74,7 +74,7 @@ export default async function EventForm({
           <select
             name="venueId"
             defaultValue={initial?.venueId || ""}
-            className="w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
           >
             <option value="">Локація</option>
             {venues.map((v) => (
@@ -88,35 +88,35 @@ export default async function EventForm({
             name="imageUrl"
             defaultValue={initial?.imageUrl || ""}
             placeholder="URL зображення (опційно)"
-            className="md:col-span-2 w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+            className="md:col-span-2 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
           />
 
           <div>
-            <label className="text-xs text-slate-400">Початок</label>
+            <label className="text-xs text-slate-500">Початок</label>
             <input
               type="datetime-local"
               name="startAt"
               defaultValue={startVal}
-              className="mt-1 w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
             />
           </div>
 
           <div>
-            <label className="text-xs text-slate-400">Завершення (опційно)</label>
+            <label className="text-xs text-slate-500">Завершення (опційно)</label>
             <input
               type="datetime-local"
               name="endAt"
               defaultValue={endVal}
-              className="mt-1 w-full rounded-xl border border-white/10 bg-slate-950/50 px-3 py-2 text-sm outline-none focus:border-brand-blue/60"
+              className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-brand-blue"
             />
           </div>
 
-          <button className="md:col-span-2 rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-slate-950 hover:opacity-90 transition">
+          <button className="md:col-span-2 rounded-xl bg-brand-blue px-4 py-2 text-sm font-semibold text-white hover:opacity-90 transition">
             Зберегти
           </button>
         </form>
 
-        <div className="text-xs text-slate-400">
+        <div className="text-xs text-slate-500">
           Подія створюється як "Чернетка". Після додавання квитків її можна опублікувати.
         </div>
       </div>

@@ -33,14 +33,14 @@ export default async function PanelOrdersPage({ searchParams }: { searchParams: 
           {filterEventId ? (
             <Link
               href="/panel/orders"
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition"
             >
               Скинути фільтр
             </Link>
           ) : (
             <Link
               href="/panel/events"
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition"
             >
               До подій
             </Link>
@@ -53,7 +53,7 @@ export default async function PanelOrdersPage({ searchParams }: { searchParams: 
           <h3 className="text-lg font-semibold">Список</h3>
           <div className="mt-3 overflow-x-auto">
             <table className="w-full text-sm">
-              <thead className="text-left text-slate-400">
+              <thead className="text-left text-slate-500">
                 <tr>
                   <th className="py-2 pr-4">Дата</th>
                   <th className="py-2 pr-4">Подія</th>
@@ -65,17 +65,17 @@ export default async function PanelOrdersPage({ searchParams }: { searchParams: 
               </thead>
               <tbody>
                 {items.map((it: any) => (
-                  <tr key={it.id} className="border-t border-white/10">
+                  <tr key={it.id} className="border-t border-slate-200">
                     <td className="py-2 pr-4 whitespace-nowrap">{formatDateTime(new Date(it.order.createdAt))}</td>
                     <td className="py-2 pr-4">
                       <Link href={`/panel/events/${it.ticketType.eventId}/orders`} className="hover:text-brand-blue transition">
                         {it.ticketType.event.title}
                       </Link>
-                      <div className="text-xs text-slate-400">{it.ticketType.event.venue.title}</div>
+                      <div className="text-xs text-slate-500">{it.ticketType.event.venue.title}</div>
                     </td>
                     <td className="py-2 pr-4">
                       {(it.order.user.name || "Користувач")}
-                      <div className="text-xs text-slate-400">{it.order.user.email}</div>
+                      <div className="text-xs text-slate-500">{it.order.user.email}</div>
                     </td>
                     <td className="py-2 pr-4">{it.ticketType.name}</td>
                     <td className="py-2 pr-4">{it.quantity}</td>
@@ -84,7 +84,7 @@ export default async function PanelOrdersPage({ searchParams }: { searchParams: 
                 ))}
               </tbody>
             </table>
-            {items.length === 0 && <div className="text-slate-300">Замовлень ще немає.</div>}
+            {items.length === 0 && <div className="text-slate-600">Замовлень ще немає.</div>}
           </div>
         </div>
       </Card>

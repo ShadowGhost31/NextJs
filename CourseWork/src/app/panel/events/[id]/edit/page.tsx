@@ -29,8 +29,8 @@ export default async function EditEventPage({ params, searchParams }: { params: 
     return (
       <Card>
         <div className="p-5">
-          <div className="text-slate-200">Подію не знайдено або недостатньо прав.</div>
-          <Link href="/panel/events" className="inline-block mt-4 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition">
+          <div className="text-slate-700">Подію не знайдено або недостатньо прав.</div>
+          <Link href="/panel/events" className="inline-block mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition">
             До списку подій
           </Link>
         </div>
@@ -55,25 +55,25 @@ export default async function EditEventPage({ params, searchParams }: { params: 
               <Badge>{event.category.title}</Badge>
             </div>
             {saved && <div className="text-sm text-brand-green">Зміни збережено</div>}
-            {error && <div className="text-sm text-rose-200">{decodeURIComponent(error)}</div>}
+            {error && <div className="text-sm text-rose-600">{decodeURIComponent(error)}</div>}
           </div>
 
           <div className="flex flex-wrap gap-2">
             <Link
               href={`/panel/events/${event.id}/tickets`}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition"
             >
               Квитки
             </Link>
             <Link
               href={`/panel/events/${event.id}/orders`}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition"
             >
               Замовлення
             </Link>
             <Link
               href={`/events/${event.id}`}
-              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm hover:bg-white/10 transition"
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm hover:bg-white transition"
             >
               Публічна сторінка
             </Link>
@@ -86,7 +86,7 @@ export default async function EditEventPage({ params, searchParams }: { params: 
           <h3 className="text-lg font-semibold">Статус</h3>
           <div className="mt-3 flex flex-wrap gap-2">
             <form action={setEventStatusAction.bind(null, event.id, EventStatus.DRAFT)}>
-              <button className="rounded-xl border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold hover:bg-white/15 transition">
+              <button className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold hover:bg-slate-50 transition">
                 У чернетки
               </button>
             </form>
@@ -101,7 +101,7 @@ export default async function EditEventPage({ params, searchParams }: { params: 
               </button>
             </form>
           </div>
-          <div className="text-xs text-slate-400 mt-2">
+          <div className="text-xs text-slate-500 mt-2">
             Для відображення у каталозі подія має бути "Опубліковано".
           </div>
         </div>
@@ -124,7 +124,7 @@ export default async function EditEventPage({ params, searchParams }: { params: 
       <Card>
         <div className="p-5">
           <h3 className="text-lg font-semibold text-rose-100">Небезпечна зона</h3>
-          <div className="text-sm text-slate-300 mt-1">
+          <div className="text-sm text-slate-600 mt-1">
             Видалення події можливе лише якщо для неї немає замовлень.
           </div>
           <div className="mt-4">

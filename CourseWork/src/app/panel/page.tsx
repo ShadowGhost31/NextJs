@@ -8,8 +8,8 @@ export const dynamic = "force-dynamic";
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-      <div className="text-xs text-slate-400">{label}</div>
+    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+      <div className="text-xs text-slate-500">{label}</div>
       <div className="text-2xl font-semibold mt-1">{value}</div>
     </div>
   );
@@ -62,14 +62,14 @@ export default async function PanelHomePage() {
             <h2 className="text-lg font-semibold">Продажі</h2>
             <div className="mt-3 space-y-2">
               <div className="flex items-center justify-between">
-                <div className="text-sm text-slate-300">Продано квитків</div>
+                <div className="text-sm text-slate-600">Продано квитків</div>
                 <Badge>{ticketsSold}</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-sm text-slate-300">Сума замовлень</div>
+                <div className="text-sm text-slate-600">Сума замовлень</div>
                 <Badge>{formatUahFromCents(revenue)} грн</Badge>
               </div>
-              <div className="text-xs text-slate-400 mt-2">
+              <div className="text-xs text-slate-500 mt-2">
                 Оплата не інтегрована. Сума рахується за створеними замовленнями.
               </div>
             </div>
@@ -79,7 +79,7 @@ export default async function PanelHomePage() {
         <Card>
           <div className="p-5">
             <h2 className="text-lg font-semibold">Підказка</h2>
-            <div className="text-sm text-slate-300 mt-2 space-y-2">
+            <div className="text-sm text-slate-600 mt-2 space-y-2">
               <div>
                 1) Створи подію у розділі "Події".
               </div>

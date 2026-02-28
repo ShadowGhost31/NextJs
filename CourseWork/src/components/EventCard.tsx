@@ -33,9 +33,12 @@ export default function EventCard({
   return (
     <Card>
       <div className="p-5 space-y-3">
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex items-start justify-between gap-4">
           <div className="space-y-2 min-w-0">
-            <Link href={`/events/${event.id}`} className="text-lg font-semibold hover:text-brand-blue transition">
+            <Link
+              href={`/events/${event.id}`}
+              className="text-lg font-semibold text-slate-900 hover:text-brand-blue transition"
+            >
               {event.title}
             </Link>
 
@@ -46,15 +49,15 @@ export default function EventCard({
               <Badge>{priceLabel}</Badge>
             </div>
 
-            <div className="text-sm text-slate-300 line-clamp-2">{event.description}</div>
+            <div className="text-sm text-slate-600 line-clamp-2">{event.description}</div>
           </div>
 
           <div className="shrink-0 text-right">
-            <div className="text-xs text-slate-400">Рейтинг</div>
+            <div className="text-xs text-slate-500">Рейтинг</div>
             <div className="mt-1">
               <RatingStars value={event.avgRating} />
             </div>
-            <div className="text-xs text-slate-400 mt-1">{event.reviews.length} відгуків</div>
+            <div className="text-xs text-slate-500 mt-1">{event.reviews.length} відгуків</div>
 
             <div className="mt-2">
               {isAuthed ? (
@@ -62,7 +65,7 @@ export default function EventCard({
               ) : (
                 <Link
                   href={`/login?next=${encodeURIComponent(`/events/${event.id}`)}`}
-                  className="inline-block rounded-xl border border-white/10 bg-white/5 px-2.5 py-1.5 text-xs hover:bg-white/10 transition"
+                  className="inline-block rounded-xl border border-slate-300 bg-white px-2.5 py-1.5 text-xs text-slate-800 hover:bg-slate-50 transition"
                 >
                   ☆ В обране
                 </Link>
@@ -72,7 +75,7 @@ export default function EventCard({
         </div>
 
         {event.imageUrl ? (
-          <div className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/5">
+          <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
             <Image
               src={event.imageUrl}
               alt={event.title}

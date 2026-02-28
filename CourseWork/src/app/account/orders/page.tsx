@@ -16,7 +16,7 @@ function statusLabel(s: string) {
 
 function statusClass(s: string) {
   if (s === "PAID") return "border-brand-green/50 bg-brand-green/15 text-brand-green";
-  if (s === "CANCELED") return "border-white/15 bg-white/5 text-slate-300";
+  if (s === "CANCELED") return "border-slate-200 bg-slate-50 text-slate-600";
   return "border-brand-orange/50 bg-brand-orange/15 text-brand-orange";
 }
 
@@ -46,11 +46,11 @@ export default async function OrdersPage({
         <div className="flex items-end justify-between gap-3">
           <div>
             <h2 className="text-lg font-semibold">Мої замовлення</h2>
-            <div className="text-sm text-slate-300 mt-1">Оплата симульована (без платіжної інтеграції).</div>
+            <div className="text-sm text-slate-600 mt-1">Оплата симульована (без платіжної інтеграції).</div>
           </div>
           <Link
             href="/events"
-            className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition"
+            className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm hover:bg-white transition"
           >
             Каталог
           </Link>
@@ -59,7 +59,7 @@ export default async function OrdersPage({
         {f && (
           <div
             className={`mt-4 rounded-xl border px-4 py-3 text-sm ${
-              f.tone === "ok" ? "border-brand-green/50 bg-brand-green/10 text-slate-100" : "border-brand-orange/50 bg-brand-orange/10 text-slate-100"
+              f.tone === "ok" ? "border-brand-green/50 bg-brand-green/10 text-slate-900" : "border-brand-orange/50 bg-brand-orange/10 text-slate-900"
             }`}
           >
             {f.text}
@@ -67,12 +67,12 @@ export default async function OrdersPage({
         )}
 
         <div className="mt-4 space-y-3">
-          {orders.length === 0 && <div className="text-slate-300">Замовлень ще немає.</div>}
+          {orders.length === 0 && <div className="text-slate-600">Замовлень ще немає.</div>}
 
           {orders.map((o) => (
-            <div key={o.id} className="rounded-xl border border-white/10 bg-white/5 p-4">
+            <div key={o.id} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-                <div className="text-sm text-slate-300">
+                <div className="text-sm text-slate-600">
                   {formatDateTime(new Date(o.createdAt))} • Сума: {(o.total / 100).toFixed(2)} грн
                 </div>
 
@@ -85,14 +85,14 @@ export default async function OrdersPage({
                     <>
                       <form action={payOrderAction}>
                         <input type="hidden" name="orderId" value={o.id} />
-                        <button className="rounded-xl bg-brand-blue px-3 py-2 text-xs font-semibold text-slate-950 hover:opacity-90 transition">
+                        <button className="rounded-xl bg-brand-blue px-3 py-2 text-xs font-semibold text-white hover:opacity-90 transition">
                           Оплатити
                         </button>
                       </form>
 
                       <ConfirmForm action={cancelOrderAction} confirmText="Скасувати це замовлення? Кількість квитків повернеться в наявність.">
                         <input type="hidden" name="orderId" value={o.id} />
-                        <button className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-xs hover:bg-white/10 transition">
+                        <button className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs hover:bg-white transition">
                           Скасувати
                         </button>
                       </ConfirmForm>
@@ -101,14 +101,14 @@ export default async function OrdersPage({
                 </div>
               </div>
 
-              <ul className="mt-3 text-sm text-slate-100 space-y-1">
+              <ul className="mt-3 text-sm text-slate-900 space-y-1">
                 {o.items.map((it) => (
                   <li key={it.id}>
                     <Link href={`/events/${it.ticketType.event.id}`} className="hover:text-brand-blue transition">
                       {it.ticketType.event.title}
                     </Link>{" "}
                     — {it.ticketType.name} ×{it.quantity}
-                    <span className="text-slate-400"> • {it.ticketType.event.venue.title}</span>
+                    <span className="text-slate-500"> • {it.ticketType.event.venue.title}</span>
                   </li>
                 ))}
               </ul>

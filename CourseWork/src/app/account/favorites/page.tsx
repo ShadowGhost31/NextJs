@@ -23,10 +23,10 @@ export default async function FavoritesPage() {
       <div className="p-5">
         <h2 className="text-lg font-semibold">Обране</h2>
         <div className="mt-3 grid gap-3 md:grid-cols-2">
-          {mapped.length === 0 && <div className="text-slate-300">В обраному поки порожньо.</div>}
+          {mapped.length === 0 && <div className="text-slate-600">В обраному поки порожньо.</div>}
 
           {mapped.map(({ event, avgRating, minPrice }) => (
-            <div key={event.id} className="rounded-2xl border border-white/10 bg-white/5 p-4">
+            <div key={event.id} className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
               <Link href={`/events/${event.id}`} className="text-lg font-semibold hover:text-brand-blue transition">
                 {event.title}
               </Link>

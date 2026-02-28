@@ -8,7 +8,7 @@ function Tab({ href, label }: { href: string; label: string }) {
   return (
     <Link
       href={href}
-      className="rounded-xl border border-white/10 bg-white/5 px-3 py-2 text-sm hover:bg-white/10 transition"
+      className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm hover:bg-white transition"
     >
       {label}
     </Link>
@@ -23,11 +23,11 @@ export default async function PanelLayout({ children }: { children: React.ReactN
       <div className="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
         <div>
           <h1 className="text-2xl font-semibold tracking-tight">Панель керування</h1>
-          <p className="text-sm text-slate-300 mt-1">
+          <p className="text-sm text-slate-600 mt-1">
             Події, квитки та замовлення організатора
           </p>
         </div>
-        <div className="text-sm text-slate-300">{me.email} • {me.role}</div>
+        <div className="text-sm text-slate-600">{me.email} • {me.role}</div>
       </div>
 
       <Card>
