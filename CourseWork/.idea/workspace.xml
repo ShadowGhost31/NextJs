@@ -4,14 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ac919ddd-23fb-4217-bf90-3947d3292380" name="Changes" comment="feat(events): move calendar widget to /events (remove from home)&#10;feat(reviews): auto-approve reviews on create&#10;feat(reviews): allow admin to delete reviews on event page&#10;refactor(admin): update admin reviews page for new flow&#10;feat(seed): add more demo events (8 total)&#10;test(vitest): fix JSX runtime + WebCrypto, update tests">
+    <list default="true" id="3ca71b7c-34d2-4594-b101-1edb825699c6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/admin/reviews/page.test.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/login/page.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/login/page.test.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/panel/page.test.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/register/page.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/register/page.test.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/FavoriteButton.test.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/FavoriteButton.test.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/auth.test.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/../Tutorial/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/../Tutorial/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -21,23 +16,26 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/.." />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "ShadowGhost31"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;ShadowGhost31&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/ShadowGhost31/NextJs.git",
-    "accountId": "ef375b0f-a973-42fa-9b9d-fbda4a0f95b3"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/ShadowGhost31/NextJs.git&quot;,
+    &quot;accountId&quot;: &quot;ef375b0f-a973-42fa-9b9d-fbda4a0f95b3&quot;
   }
+}</component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
 }]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 5
-}]]></component>
-  <component name="ProjectId" id="3AHPMLjL26kAcPWz3BWqyQQnT1X" />
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="3AHttWZpq5Q1M2CB2CKUXBTQndb" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -46,6 +44,7 @@
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "js.debugger.nextJs.config.created.client": "true",
     "js.debugger.nextJs.config.created.server": "true",
@@ -56,6 +55,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "npm.install.executor": "Run",
+    "npm.lint.executor": "Run",
     "npm.test.executor": "Run",
     "ts.external.directory.path": "G:\\ZTU\\Nextjs\\CourseWork\\node_modules\\typescript\\lib",
     "vue.rearranger.settings.migration": "true"
@@ -75,6 +75,16 @@
       <envs />
       <method v="2" />
     </configuration>
+    <configuration name="lint" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
+      <package-json value="$PROJECT_DIR$/package.json" />
+      <command value="run" />
+      <scripts>
+        <script value="lint" />
+      </scripts>
+      <node-interpreter value="project" />
+      <envs />
+      <method v="2" />
+    </configuration>
     <configuration name="test" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
       <package-json value="$PROJECT_DIR$/package.json" />
       <command value="run" />
@@ -87,6 +97,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="npm.lint" />
         <item itemvalue="npm.test" />
       </list>
     </recent_temporary>
@@ -100,29 +111,17 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ac919ddd-23fb-4217-bf90-3947d3292380" name="Changes" comment="" />
-      <created>1772246474334</created>
+      <changelist id="3ca71b7c-34d2-4594-b101-1edb825699c6" name="Changes" comment="" />
+      <created>1772261539509</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1772246474334</updated>
-      <workItem from="1772246476098" duration="2215000" />
+      <updated>1772261539509</updated>
+      <workItem from="1772261541232" duration="1680000" />
+      <workItem from="1772296479646" duration="167000" />
     </task>
-    <task id="LOCAL-00001" summary="feat(events): move calendar widget to /events (remove from home)&#10;feat(reviews): auto-approve reviews on create&#10;feat(reviews): allow admin to delete reviews on event page&#10;refactor(admin): update admin reviews page for new flow&#10;feat(seed): add more demo events (8 total)&#10;test(vitest): fix JSX runtime + WebCrypto, update tests">
-      <option name="closed" value="true" />
-      <created>1772246546856</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1772246546856</updated>
-    </task>
-    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="feat(events): move calendar widget to /events (remove from home)&#10;feat(reviews): auto-approve reviews on create&#10;feat(reviews): allow admin to delete reviews on event page&#10;refactor(admin): update admin reviews page for new flow&#10;feat(seed): add more demo events (8 total)&#10;test(vitest): fix JSX runtime + WebCrypto, update tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="feat(events): move calendar widget to /events (remove from home)&#10;feat(reviews): auto-approve reviews on create&#10;feat(reviews): allow admin to delete reviews on event page&#10;refactor(admin): update admin reviews page for new flow&#10;feat(seed): add more demo events (8 total)&#10;test(vitest): fix JSX runtime + WebCrypto, update tests" />
   </component>
 </project>
